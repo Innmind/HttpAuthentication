@@ -1,0 +1,28 @@
+arguments:
+    basicAuthorizationResolver: Innmind\HttpAuthentication\ViaBasicAuthorization\Resolver ?? $default.basicAuthorizationResolver
+    formResolver: Innmind\HttpAuthentication\ViaForm\Resolver ?? $default.formResolver
+    urlAuthorityResolver: Innmind\HttpAuthentication\ViaUrlAuthority\Resolver ?? $default.urlAuthorityResolver
+
+expose:
+    authenticator: $any
+
+services:
+    any Innmind\HttpAuthentication\Any:
+        - $authenticator.urlAuthority
+        - $authenticator.basicAuthorization
+        - $authenticator.form
+
+    authenticator:
+        urlAuthority Innmind\HttpAuthentication\ViaUrlAuthority:
+            - $urlAuthorityResolver
+
+        basicAuthorization Innmind\HttpAuthentication\ViaBasicAuthorization:
+            - $basicAuthorizationResolver
+
+        form Innmind\HttpAuthentication\ViaForm:
+            - $formResolver
+
+    default:
+        basicAuthorizationResolver Innmind\HttpAuthentication\ViaBasicAuthorization\NullResolver: []
+        formResolver Innmind\HttpAuthentication\ViaForm\NullResolver: []
+        urlAuthorityResolver Innmind\HttpAuthentication\ViaUrlAuthority\NullResolver: []
