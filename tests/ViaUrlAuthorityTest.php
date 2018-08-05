@@ -9,6 +9,7 @@ use Innmind\HttpAuthentication\{
     ViaUrlAuthority\Resolver,
     ViaUrlAuthority\NullResolver,
     Identity,
+    Exception\NotSupported,
 };
 use Innmind\Url\Url;
 use Innmind\Http\Message\ServerRequest;
@@ -22,6 +23,26 @@ class ViaUrlAuthorityTest extends TestCase
             Authenticator::class,
             new ViaUrlAuthority(new NullResolver)
         );
+    }
+
+    public function testThrowWhenNoUserProvidedInTheUrl()
+    {
+        $authenticate = new ViaUrlAuthority(
+            $resolver = $this->createMock(Resolver::class)
+        );
+        $url = Url::fromString('https://localhost/');
+        $resolver
+            ->expects($this->never())
+            ->method('__invoke');
+        $request = $this->createMock(ServerRequest::class);
+        $request
+            ->expects($this->any())
+            ->method('url')
+            ->willReturn($url);
+
+        $this->expectException(NotSupported::class);
+
+        $authenticate($request);
     }
 
     public function testInvokation()
