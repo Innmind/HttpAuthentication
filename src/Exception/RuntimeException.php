@@ -3,6 +3,6 @@ declare(strict_types = 1);
 
 namespace Innmind\HttpAuthentication\Exception;
 
-final class NotSupported extends RuntimeException
+class RuntimeException extends \RuntimeException implements Exception
 {
 }
