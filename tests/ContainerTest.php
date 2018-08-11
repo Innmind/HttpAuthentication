@@ -3,7 +3,7 @@ declare(strict_types = 1);
 
 namespace Tests\Innmind\HttpAuthentication;
 
-use Innmind\HttpAuthentication\Any;
+use Innmind\HttpAuthentication\ValidateAuthorizationHeader;
 use Innmind\Compose\ContainerBuilder\ContainerBuilder;
 use Innmind\Url\Path;
 use Innmind\Immutable\Map;
@@ -18,6 +18,6 @@ class ContainerTest extends TestCase
             new Map('string', 'mixed')
         );
 
-        $this->assertInstanceOf(Any::class, $container->get('authenticator'));
+        $this->assertInstanceOf(ValidateAuthorizationHeader::class, $container->get('authenticator'));
     }
 }

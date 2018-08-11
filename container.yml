@@ -4,9 +4,12 @@ arguments:
     urlAuthorityResolver: Innmind\HttpAuthentication\ViaUrlAuthority\Resolver ?? $default.urlAuthorityResolver
 
 expose:
-    authenticator: $any
+    authenticator: $validateAuthorizationHeader
 
 services:
+    validateAuthorizationHeader Innmind\HttpAuthentication\ValidateAuthorizationHeader:
+        - $any
+
     any Innmind\HttpAuthentication\Any:
         - $authenticator.urlAuthority
         - $authenticator.basicAuthorization
