@@ -2,13 +2,14 @@ arguments:
     basicAuthorizationResolver: Innmind\HttpAuthentication\ViaBasicAuthorization\Resolver ?? $default.basicAuthorizationResolver
     formResolver: Innmind\HttpAuthentication\ViaForm\Resolver ?? $default.formResolver
     urlAuthorityResolver: Innmind\HttpAuthentication\ViaUrlAuthority\Resolver ?? $default.urlAuthorityResolver
+    storage: Innmind\HttpAuthentication\ViaStorage\Storage ?? $default.storage
 
 expose:
     authenticator: $validateAuthorizationHeader
 
 services:
     validateAuthorizationHeader Innmind\HttpAuthentication\ValidateAuthorizationHeader:
-        - $any
+        - $authenticator.storage
 
     any Innmind\HttpAuthentication\Any:
         - $authenticator.urlAuthority
@@ -25,7 +26,12 @@ services:
         form Innmind\HttpAuthentication\ViaForm:
             - $formResolver
 
+        storage Innmind\HttpAuthentication\ViaStorage:
+            - $any
+            - $storage
+
     default:
         basicAuthorizationResolver Innmind\HttpAuthentication\ViaBasicAuthorization\NullResolver: []
         formResolver Innmind\HttpAuthentication\ViaForm\NullResolver: []
         urlAuthorityResolver Innmind\HttpAuthentication\ViaUrlAuthority\NullResolver: []
+        storage Innmind\HttpAuthentication\ViaStorage\NullStorage: []
