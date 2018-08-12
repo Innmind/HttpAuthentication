@@ -8,6 +8,7 @@ use Innmind\HttpAuthentication\{
     ViaStorage\Storage,
     Identity,
 };
+use Innmind\Http\Message\ServerRequest;
 use PHPUnit\Framework\TestCase;
 
 class InMemoryTest extends TestCase
@@ -21,16 +22,17 @@ class InMemoryTest extends TestCase
     {
         $this->expectException(\TypeError::class);
 
-        (new InMemory)->get();
+        (new InMemory)->get($this->createMock(ServerRequest::class));
     }
 
     public function testHas()
     {
         $storage = new InMemory;
+        $request = $this->createMock(ServerRequest::class);
 
-        $this->assertFalse($storage->has());
+        $this->assertFalse($storage->has($request));
         $storage->set($this->createMock(Identity::class));
-        $this->assertTrue($storage->has());
+        $this->assertTrue($storage->has($request));
     }
 
     public function testSet()
@@ -39,6 +41,6 @@ class InMemoryTest extends TestCase
         $identity = $this->createMock(Identity::class);
 
         $this->assertNull($storage->set($identity));
-        $this->assertSame($identity, $storage->get());
+        $this->assertSame($identity, $storage->get($this->createMock(ServerRequest::class)));
     }
 }
