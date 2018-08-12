@@ -8,6 +8,7 @@ use Innmind\HttpAuthentication\{
     ViaStorage\Storage,
     Identity,
 };
+use Innmind\Http\Message\ServerRequest;
 use PHPUnit\Framework\TestCase;
 
 class NullStorageTest extends TestCase
@@ -21,16 +22,17 @@ class NullStorageTest extends TestCase
     {
         $this->expectException(\TypeError::class);
 
-        (new NullStorage)->get();
+        (new NullStorage)->get($this->createMock(ServerRequest::class));
     }
 
     public function testHas()
     {
         $storage = new NullStorage;
+        $request = $this->createMock(ServerRequest::class);
 
-        $this->assertFalse($storage->has());
+        $this->assertFalse($storage->has($request));
         $storage->set($this->createMock(Identity::class));
-        $this->assertFalse($storage->has());
+        $this->assertFalse($storage->has($request));
     }
 
     public function testSet()
@@ -41,6 +43,6 @@ class NullStorageTest extends TestCase
 
         $this->expectException(\TypeError::class);
 
-        $storage->get();
+        $storage->get($this->createMock(ServerRequest::class));
     }
 }

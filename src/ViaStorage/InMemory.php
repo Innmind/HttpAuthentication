@@ -4,17 +4,18 @@ declare(strict_types = 1);
 namespace Innmind\HttpAuthentication\ViaStorage;
 
 use Innmind\HttpAuthentication\Identity;
+use Innmind\Http\Message\ServerRequest;
 
 final class InMemory implements Storage
 {
     private $identity;
 
-    public function get(): Identity
+    public function get(ServerRequest $request): Identity
     {
         return $this->identity;
     }
 
-    public function has(): bool
+    public function has(ServerRequest $request): bool
     {
         return $this->identity instanceof Identity;
     }
