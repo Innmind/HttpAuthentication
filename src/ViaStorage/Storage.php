@@ -10,5 +10,5 @@ interface Storage
 {
     public function get(ServerRequest $request): Identity;
     public function has(ServerRequest $request): bool;
-    public function set(Identity $identity): void;
+    public function set(ServerRequest $request, Identity $identity): void;
 }

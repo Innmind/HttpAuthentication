@@ -31,18 +31,22 @@ class NullStorageTest extends TestCase
         $request = $this->createMock(ServerRequest::class);
 
         $this->assertFalse($storage->has($request));
-        $storage->set($this->createMock(Identity::class));
+        $storage->set($request, $this->createMock(Identity::class));
         $this->assertFalse($storage->has($request));
     }
 
     public function testSet()
     {
         $storage = new NullStorage;
+        $request = $this->createMock(ServerRequest::class);
 
-        $this->assertNull($storage->set($this->createMock(Identity::class)));
+        $this->assertNull($storage->set(
+            $request,
+            $this->createMock(Identity::class)
+        ));
 
         $this->expectException(\TypeError::class);
 
-        $storage->get($this->createMock(ServerRequest::class));
+        $storage->get($request);
     }
 }

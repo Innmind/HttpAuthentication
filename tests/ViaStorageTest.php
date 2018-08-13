@@ -55,7 +55,7 @@ class ViaStorageTest extends TestCase
         $inner
             ->expects($this->never())
             ->method('__invoke');
-        $storage->set($identity);
+        $storage->set($request, $identity);
 
         $this->assertSame($identity, $authenticate($request));
     }

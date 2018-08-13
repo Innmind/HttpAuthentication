@@ -18,7 +18,7 @@ final class NullStorage implements Storage
         return false;
     }
 
-    public function set(Identity $identity): void
+    public function set(ServerRequest $request, Identity $identity): void
     {
         // pass
     }

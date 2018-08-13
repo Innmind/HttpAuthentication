@@ -24,7 +24,7 @@ final class ViaStorage implements Authenticator
         }
 
         $identity = ($this->authenticate)($request);
-        $this->storage->set($identity);
+        $this->storage->set($request, $identity);
 
         return $identity;
     }
