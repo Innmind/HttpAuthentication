@@ -31,7 +31,7 @@ class InMemoryTest extends TestCase
         $request = $this->createMock(ServerRequest::class);
 
         $this->assertFalse($storage->has($request));
-        $storage->set($this->createMock(Identity::class));
+        $storage->set($request, $this->createMock(Identity::class));
         $this->assertTrue($storage->has($request));
     }
 
@@ -39,8 +39,9 @@ class InMemoryTest extends TestCase
     {
         $storage = new InMemory;
         $identity = $this->createMock(Identity::class);
+        $request = $this->createMock(ServerRequest::class);
 
-        $this->assertNull($storage->set($identity));
-        $this->assertSame($identity, $storage->get($this->createMock(ServerRequest::class)));
+        $this->assertNull($storage->set($request, $identity));
+        $this->assertSame($identity, $storage->get($request));
     }
 }

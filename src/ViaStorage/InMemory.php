@@ -20,7 +20,7 @@ final class InMemory implements Storage
         return $this->identity instanceof Identity;
     }
 
-    public function set(Identity $identity): void
+    public function set(ServerRequest $request, Identity $identity): void
     {
         $this->identity = $identity;
     }
