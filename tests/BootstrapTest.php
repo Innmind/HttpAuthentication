@@ -10,6 +10,7 @@ use Innmind\HttpAuthentication\{
     Any,
     ViaUrlAuthority,
     ViaBasicAuthorization,
+    ViaAuthorization,
     ViaForm,
     ViaStorage,
 };
@@ -52,6 +53,11 @@ class BootstrapTest extends TestCase
         $this->assertInstanceOf(
             ViaStorage::class,
             $viaStorage($this->createMock(Authenticator::class))
+        );
+        $this->assertInternalType('callable', $auth['via_authorization']);
+        $this->assertInstanceOf(
+            ViaAuthorization::class,
+            $auth['via_authorization']($this->createMock(ViaAuthorization\Resolver::class))
         );
     }
 }

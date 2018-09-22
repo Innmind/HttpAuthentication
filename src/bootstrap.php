@@ -26,5 +26,8 @@ function bootstrap(): array
                 return new ViaStorage($authenticate, $storage);
             };
         },
+        'via_authorization' => static function(ViaAuthorization\Resolver $resolver): Authenticator {
+            return new ViaAuthorization($resolver);
+        },
     ];
 }
