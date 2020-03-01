@@ -20,7 +20,7 @@ final class ValidateAuthorizationHeader implements Authenticator
 
     public function __invoke(ServerRequest $request): Identity
     {
-        if (!$request->headers()->has('Authorization')) {
+        if (!$request->headers()->contains('Authorization')) {
             return ($this->authenticate)($request);
         }
 

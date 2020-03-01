@@ -5,11 +5,11 @@ namespace Innmind\HttpAuthentication\ViaUrlAuthority;
 
 use Innmind\HttpAuthentication\Identity;
 use Innmind\Url\Authority\UserInformation\{
-    UserInterface,
-    PasswordInterface,
+    User,
+    Password,
 };
 
 interface Resolver
 {
-    public function __invoke(UserInterface $user, PasswordInterface $password): Identity;
+    public function __invoke(User $user, Password $password): Identity;
 }

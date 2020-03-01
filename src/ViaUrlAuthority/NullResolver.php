@@ -8,13 +8,13 @@ use Innmind\HttpAuthentication\{
     Exception\AuthenticatorNotImplemented,
 };
 use Innmind\Url\Authority\UserInformation\{
-    UserInterface,
-    PasswordInterface,
+    User,
+    Password,
 };
 
 final class NullResolver implements Resolver
 {
-    public function __invoke(UserInterface $user, PasswordInterface $password): Identity
+    public function __invoke(User $user, Password $password): Identity
     {
         throw new AuthenticatorNotImplemented;
     }

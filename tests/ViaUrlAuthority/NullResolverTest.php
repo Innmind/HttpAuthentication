@@ -9,8 +9,8 @@ use Innmind\HttpAuthentication\{
     Exception\AuthenticatorNotImplemented,
 };
 use Innmind\Url\Authority\UserInformation\{
-    UserInterface,
-    PasswordInterface,
+    User,
+    Password,
 };
 use PHPUnit\Framework\TestCase;
 
@@ -26,8 +26,8 @@ class NullResolverTest extends TestCase
         $this->expectException(AuthenticatorNotImplemented::class);
 
         (new NullResolver)(
-            $this->createMock(UserInterface::class),
-            $this->createMock(PasswordInterface::class)
+            User::none(),
+            Password::none(),
         );
     }
 }

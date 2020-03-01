@@ -16,7 +16,7 @@
     },
     "require": {
         "php": "~7.4",
-        "innmind/http": "^3.6"
+        "innmind/http": "~4.2"
     },
     "autoload": {
         "psr-4": {

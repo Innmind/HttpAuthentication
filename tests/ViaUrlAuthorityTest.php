@@ -30,7 +30,7 @@ class ViaUrlAuthorityTest extends TestCase
         $authenticate = new ViaUrlAuthority(
             $resolver = $this->createMock(Resolver::class)
         );
-        $url = Url::fromString('https://localhost/');
+        $url = Url::of('https://localhost/');
         $resolver
             ->expects($this->never())
             ->method('__invoke');
@@ -50,7 +50,7 @@ class ViaUrlAuthorityTest extends TestCase
         $authenticate = new ViaUrlAuthority(
             $resolver = $this->createMock(Resolver::class)
         );
-        $url = Url::fromString('https://user:password@localhost/');
+        $url = Url::of('https://user:password@localhost/');
         $user = $url->authority()->userInformation()->user();
         $password = $url->authority()->userInformation()->password();
         $resolver

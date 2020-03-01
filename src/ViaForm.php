@@ -23,7 +23,7 @@ final class ViaForm implements Authenticator
 
     public function __invoke(ServerRequest $request): Identity
     {
-        if ((string) $request->method() !== Method::POST) {
+        if ($request->method()->toString() !== Method::post()->toString()) {
             throw new NotSupported;
         }
 

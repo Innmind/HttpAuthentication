@@ -13,7 +13,8 @@ use Innmind\HttpAuthentication\{
 };
 use Innmind\Http\Message\{
     ServerRequest,
-    Method\Method,
+    Method,
+    Form,
 };
 use PHPUnit\Framework\TestCase;
 
@@ -52,14 +53,19 @@ class ViaFormTest extends TestCase
             $resolver = $this->createMock(Resolver::class)
         );
         $request = $this->createMock(ServerRequest::class);
+        $form = Form::of();
         $request
             ->expects($this->once())
             ->method('method')
             ->willReturn(Method::post());
+        $request
+            ->expects($this->any())
+            ->method('form')
+            ->willReturn($form);
         $resolver
             ->expects($this->once())
             ->method('__invoke')
-            ->with($request->form())
+            ->with($form)
             ->willReturn($identity = $this->createMock(Identity::class));
 
         $this->assertSame($identity, $authenticate($request));
