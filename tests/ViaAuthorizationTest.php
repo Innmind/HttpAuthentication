@@ -13,7 +13,7 @@ use Innmind\HttpAuthentication\{
 };
 use Innmind\Http\{
     Message\ServerRequest,
-    Headers\Headers,
+    Headers,
     Header\Header,
     Header\Value\Value,
     Header\Authorization,

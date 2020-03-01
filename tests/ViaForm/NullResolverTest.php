@@ -22,6 +22,6 @@ class NullResolverTest extends TestCase
     {
         $this->expectException(AuthenticatorNotImplemented::class);
 
-        (new NullResolver)($this->createMock(Form::class));
+        (new NullResolver)(new Form);
     }
 }

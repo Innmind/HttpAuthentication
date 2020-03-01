@@ -22,39 +22,39 @@ class BootstrapTest extends TestCase
     {
         $auth = bootstrap();
 
-        $this->assertInternalType('callable', $auth['validate_authorization_header']);
+        $this->assertIsCallable($auth['validate_authorization_header']);
         $this->assertInstanceOf(
             ValidateAuthorizationHeader::class,
             $auth['validate_authorization_header']($this->createMock(Authenticator::class))
         );
-        $this->assertInternalType('callable', $auth['any']);
+        $this->assertIsCallable($auth['any']);
         $this->assertInstanceOf(
             Any::class,
             $auth['any']($this->createMock(Authenticator::class))
         );
-        $this->assertInternalType('callable', $auth['via_url_authority']);
+        $this->assertIsCallable($auth['via_url_authority']);
         $this->assertInstanceOf(
             ViaUrlAuthority::class,
             $auth['via_url_authority']($this->createMock(ViaUrlAuthority\Resolver::class))
         );
-        $this->assertInternalType('callable', $auth['via_basic_authorization']);
+        $this->assertIsCallable($auth['via_basic_authorization']);
         $this->assertInstanceOf(
             ViaBasicAuthorization::class,
             $auth['via_basic_authorization']($this->createMock(ViaBasicAuthorization\Resolver::class))
         );
-        $this->assertInternalType('callable', $auth['via_form']);
+        $this->assertIsCallable($auth['via_form']);
         $this->assertInstanceOf(
             ViaForm::class,
             $auth['via_form']($this->createMock(ViaForm\Resolver::class))
         );
-        $this->assertInternalType('callable', $auth['via_storage']);
+        $this->assertIsCallable($auth['via_storage']);
         $viaStorage = $auth['via_storage']($this->createMock(ViaStorage\Storage::class));
-        $this->assertInternalType('callable', $viaStorage);
+        $this->assertIsCallable($viaStorage);
         $this->assertInstanceOf(
             ViaStorage::class,
             $viaStorage($this->createMock(Authenticator::class))
         );
-        $this->assertInternalType('callable', $auth['via_authorization']);
+        $this->assertIsCallable($auth['via_authorization']);
         $this->assertInstanceOf(
             ViaAuthorization::class,
             $auth['via_authorization']($this->createMock(ViaAuthorization\Resolver::class))

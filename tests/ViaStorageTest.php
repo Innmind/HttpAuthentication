@@ -39,7 +39,7 @@ class ViaStorageTest extends TestCase
             ->willReturn($identity = $this->createMock(Identity::class));
 
         $this->assertSame($identity, $authenticate($request));
-        $this->assertTrue($storage->has($request));
+        $this->assertTrue($storage->contains($request));
         // second time is to make sure it uses the storage
         $this->assertSame($identity, $authenticate($request));
     }

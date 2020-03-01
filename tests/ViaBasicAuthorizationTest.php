@@ -13,11 +13,10 @@ use Innmind\HttpAuthentication\{
 };
 use Innmind\Http\{
     Message\ServerRequest,
-    Headers\Headers,
+    Headers,
     Header\Header,
     Header\Value\Value,
     Header\Authorization,
-    Header\AuthorizationValue,
 };
 use PHPUnit\Framework\TestCase;
 
@@ -84,9 +83,7 @@ class ViaBasicAuthorizationTest extends TestCase
             ->expects($this->any())
             ->method('headers')
             ->willReturn(Headers::of(
-                new Authorization(
-                    new AuthorizationValue('Bearer', 'foo')
-                )
+                Authorization::of('Bearer', 'foo'),
             ));
 
         $this->expectException(NotSupported::class);
@@ -109,9 +106,7 @@ class ViaBasicAuthorizationTest extends TestCase
             ->expects($this->any())
             ->method('headers')
             ->willReturn(Headers::of(
-                new Authorization(
-                    new AuthorizationValue('Basic', base64_encode('foo:bar'))
-                )
+                Authorization::of('Basic', base64_encode('foo:bar')),
             ));
 
         $this->assertSame($identity, $authenticate($request));

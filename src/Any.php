@@ -12,7 +12,8 @@ use Innmind\Http\Message\ServerRequest;
 
 final class Any implements Authenticator
 {
-    private $authenticators;
+    /** @var list<Authenticator> */
+    private array $authenticators;
 
     public function __construct(Authenticator ...$authenticators)
     {

@@ -14,7 +14,7 @@ use Innmind\Http\Message\{
 
 final class ViaForm implements Authenticator
 {
-    private $resolve;
+    private Resolver $resolve;
 
     public function __construct(Resolver $resolve)
     {
@@ -23,7 +23,7 @@ final class ViaForm implements Authenticator
 
     public function __invoke(ServerRequest $request): Identity
     {
-        if ((string) $request->method() !== Method::POST) {
+        if ($request->method()->toString() !== Method::post()->toString()) {
             throw new NotSupported;
         }
 

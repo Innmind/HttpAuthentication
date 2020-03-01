@@ -8,14 +8,16 @@ use Innmind\Http\Message\ServerRequest;
 
 final class InMemory implements Storage
 {
-    private $identity;
+    private ?Identity $identity = null;
 
+    /** @psalm-suppress InvalidNullableReturnType */
     public function get(ServerRequest $request): Identity
     {
+        /** @psalm-suppress NullableReturnStatement */
         return $this->identity;
     }
 
-    public function has(ServerRequest $request): bool
+    public function contains(ServerRequest $request): bool
     {
         return $this->identity instanceof Identity;
     }

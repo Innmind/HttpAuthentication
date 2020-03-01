@@ -7,7 +7,7 @@ use Innmind\Http\Message\ServerRequest;
 
 final class ViaSession implements Authenticator
 {
-    private $authenticate;
+    private Authenticator $authenticate;
 
     public function __construct(Authenticator $authenticate)
     {
@@ -23,24 +23,25 @@ final class ViaSession implements Authenticator
         \session_start();
 
         if (isset($_SESSION['identity'])) {
+            /** @psalm-suppress MixedArgument */
             return new class($_SESSION['identity']) implements Identity {
-                private $value;
+                private string $value;
 
-                public function __construct($value)
+                public function __construct(string $value)
                 {
                     $this->value = $value;
                 }
 
-                public function __toString(): string
+                public function toString(): string
                 {
-                    return (string) $this->value;
+                    return $this->value;
                 }
             };
         }
 
         $identity = ($this->authenticate)($request);
 
-        $_SESSION['identity'] = (string) $identity;
+        $_SESSION['identity'] = $identity->toString();
 
         return $identity;
     }

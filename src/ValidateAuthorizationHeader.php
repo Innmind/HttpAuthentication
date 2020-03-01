@@ -11,7 +11,7 @@ use Innmind\Http\{
 
 final class ValidateAuthorizationHeader implements Authenticator
 {
-    private $authenticate;
+    private Authenticator $authenticate;
 
     public function __construct(Authenticator $authenticate)
     {
@@ -20,7 +20,7 @@ final class ValidateAuthorizationHeader implements Authenticator
 
     public function __invoke(ServerRequest $request): Identity
     {
-        if (!$request->headers()->has('Authorization')) {
+        if (!$request->headers()->contains('Authorization')) {
             return ($this->authenticate)($request);
         }
 

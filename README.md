@@ -1,10 +1,8 @@
 # Http authentication
 
-| `master` | `develop` |
-|----------|-----------|
-| [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/Innmind/HttpAuthentication/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/Innmind/HttpAuthentication/?branch=master) | [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/Innmind/HttpAuthentication/badges/quality-score.png?b=develop)](https://scrutinizer-ci.com/g/Innmind/HttpAuthentication/?branch=develop) |
-| [![Code Coverage](https://scrutinizer-ci.com/g/Innmind/HttpAuthentication/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/Innmind/HttpAuthentication/?branch=master) | [![Code Coverage](https://scrutinizer-ci.com/g/Innmind/HttpAuthentication/badges/coverage.png?b=develop)](https://scrutinizer-ci.com/g/Innmind/HttpAuthentication/?branch=develop) |
-| [![Build Status](https://scrutinizer-ci.com/g/Innmind/HttpAuthentication/badges/build.png?b=master)](https://scrutinizer-ci.com/g/Innmind/HttpAuthentication/build-status/master) | [![Build Status](https://scrutinizer-ci.com/g/Innmind/HttpAuthentication/badges/build.png?b=develop)](https://scrutinizer-ci.com/g/Innmind/HttpAuthentication/build-status/develop) |
+[![Build Status](https://github.com/Innmind/HttpAuthentication/workflows/CI/badge.svg)](https://github.com/Innmind/HttpAuthentication/actions?query=workflow%3ACI)
+[![codecov](https://codecov.io/gh/Innmind/HttpAuthentication/branch/develop/graph/badge.svg)](https://codecov.io/gh/Innmind/HttpAuthentication)
+[![Type Coverage](https://shepherd.dev/github/Innmind/HttpAuthentication/coverage.svg)](https://shepherd.dev/github/Innmind/HttpAuthentication)
 
 Simple tool to authenticate a request.
 
@@ -25,7 +23,6 @@ composer require innmind/http-authentication
 
 ```php
 use function Innmind\HttpAuthentication\bootstrap;
-use Innmind\Compose\ContainerBuilder\ContainerBuilder;
 use Innmind\HttpAuthentication\{
     Identity,
     ViaBasicAuthorization\Resolver as BasicResolver,

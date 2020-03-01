@@ -11,10 +11,11 @@ use Innmind\Http\{
     Message\ServerRequest,
     Header\Authorization,
 };
+use function Innmind\Immutable\first;
 
 final class ViaBasicAuthorization implements Authenticator
 {
-    private $resolve;
+    private Resolver $resolve;
 
     public function __construct(Resolver $resolve)
     {
@@ -23,7 +24,7 @@ final class ViaBasicAuthorization implements Authenticator
 
     public function __invoke(ServerRequest $request): Identity
     {
-        if (!$request->headers()->has('Authorization')) {
+        if (!$request->headers()->contains('Authorization')) {
             throw new NotSupported;
         }
 
@@ -34,7 +35,7 @@ final class ViaBasicAuthorization implements Authenticator
             throw new NotSupported;
         }
 
-        $value = $header->values()->current();
+        $value = first($header->values());
 
         if ($value->scheme() !== 'Basic') {
             throw new NotSupported;

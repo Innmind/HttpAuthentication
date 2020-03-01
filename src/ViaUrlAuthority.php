@@ -9,13 +9,13 @@ use Innmind\HttpAuthentication\{
 };
 use Innmind\Http\Message\ServerRequest;
 use Innmind\Url\Authority\UserInformation\{
-    NullUser,
-    NullPassword,
+    User,
+    Password,
 };
 
 final class ViaUrlAuthority implements Authenticator
 {
-    private $resolve;
+    private Resolver $resolve;
 
     public function __construct(Resolver $resolve)
     {
@@ -27,7 +27,7 @@ final class ViaUrlAuthority implements Authenticator
         $user = $request->url()->authority()->userInformation()->user();
         $password = $request->url()->authority()->userInformation()->password();
 
-        if ($user instanceof NullUser && $password instanceof NullPassword) {
+        if ($user->equals(User::none()) && $password->equals(Password::none())) {
             throw new NotSupported;
         }
 

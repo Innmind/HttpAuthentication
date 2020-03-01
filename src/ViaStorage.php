@@ -8,8 +8,8 @@ use Innmind\Http\Message\ServerRequest;
 
 final class ViaStorage implements Authenticator
 {
-    private $authenticate;
-    private $storage;
+    private Authenticator $authenticate;
+    private Storage $storage;
 
     public function __construct(Authenticator $authenticate, Storage $storage)
     {
@@ -19,7 +19,7 @@ final class ViaStorage implements Authenticator
 
     public function __invoke(ServerRequest $request): Identity
     {
-        if ($this->storage->has($request)) {
+        if ($this->storage->contains($request)) {
             return $this->storage->get($request);
         }
 
