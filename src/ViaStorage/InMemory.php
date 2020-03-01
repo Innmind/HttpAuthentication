@@ -10,8 +10,10 @@ final class InMemory implements Storage
 {
     private ?Identity $identity = null;
 
+    /** @psalm-suppress InvalidNullableReturnType */
     public function get(ServerRequest $request): Identity
     {
+        /** @psalm-suppress NullableReturnStatement */
         return $this->identity;
     }
 

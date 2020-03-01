@@ -8,6 +8,7 @@ use Innmind\Http\Message\ServerRequest;
 
 final class NullStorage implements Storage
 {
+    /** @psalm-suppress InvalidReturnType */
     public function get(ServerRequest $request): Identity
     {
         // let throw a TypeError
