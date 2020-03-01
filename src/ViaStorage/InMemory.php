@@ -15,7 +15,7 @@ final class InMemory implements Storage
         return $this->identity;
     }
 
-    public function has(ServerRequest $request): bool
+    public function contains(ServerRequest $request): bool
     {
         return $this->identity instanceof Identity;
     }

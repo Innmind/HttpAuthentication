@@ -19,7 +19,7 @@ final class ViaStorage implements Authenticator
 
     public function __invoke(ServerRequest $request): Identity
     {
-        if ($this->storage->has($request)) {
+        if ($this->storage->contains($request)) {
             return $this->storage->get($request);
         }
 

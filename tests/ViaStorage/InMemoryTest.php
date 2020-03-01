@@ -30,9 +30,9 @@ class InMemoryTest extends TestCase
         $storage = new InMemory;
         $request = $this->createMock(ServerRequest::class);
 
-        $this->assertFalse($storage->has($request));
+        $this->assertFalse($storage->contains($request));
         $storage->set($request, $this->createMock(Identity::class));
-        $this->assertTrue($storage->has($request));
+        $this->assertTrue($storage->contains($request));
     }
 
     public function testSet()

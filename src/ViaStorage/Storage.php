@@ -9,6 +9,6 @@ use Innmind\Http\Message\ServerRequest;
 interface Storage
 {
     public function get(ServerRequest $request): Identity;
-    public function has(ServerRequest $request): bool;
+    public function contains(ServerRequest $request): bool;
     public function set(ServerRequest $request, Identity $identity): void;
 }

@@ -13,7 +13,7 @@ final class NullStorage implements Storage
         // let throw a TypeError
     }
 
-    public function has(ServerRequest $request): bool
+    public function contains(ServerRequest $request): bool
     {
         return false;
     }
