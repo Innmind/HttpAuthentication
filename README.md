@@ -23,7 +23,6 @@ composer require innmind/http-authentication
 
 ```php
 use function Innmind\HttpAuthentication\bootstrap;
-use Innmind\Compose\ContainerBuilder\ContainerBuilder;
 use Innmind\HttpAuthentication\{
     Identity,
     ViaBasicAuthorization\Resolver as BasicResolver,
