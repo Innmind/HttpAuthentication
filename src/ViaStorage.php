@@ -8,8 +8,8 @@ use Innmind\Http\Message\ServerRequest;
 
 final class ViaStorage implements Authenticator
 {
-    private $authenticate;
-    private $storage;
+    private Authenticator $authenticate;
+    private Storage $storage;
 
     public function __construct(Authenticator $authenticate, Storage $storage)
     {

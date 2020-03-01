@@ -11,7 +11,7 @@ use Innmind\Http\{
 
 final class ValidateAuthorizationHeader implements Authenticator
 {
-    private $authenticate;
+    private Authenticator $authenticate;
 
     public function __construct(Authenticator $authenticate)
     {

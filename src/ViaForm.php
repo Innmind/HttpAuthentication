@@ -14,7 +14,7 @@ use Innmind\Http\Message\{
 
 final class ViaForm implements Authenticator
 {
-    private $resolve;
+    private Resolver $resolve;
 
     public function __construct(Resolver $resolve)
     {

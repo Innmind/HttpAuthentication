@@ -15,7 +15,7 @@
         "issues": "http://github.com/Innmind/HttpAuthentication/issues"
     },
     "require": {
-        "php": "~7.2",
+        "php": "~7.4",
         "innmind/http": "^3.6"
     },
     "autoload": {

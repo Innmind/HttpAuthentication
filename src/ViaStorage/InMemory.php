@@ -8,7 +8,7 @@ use Innmind\Http\Message\ServerRequest;
 
 final class InMemory implements Storage
 {
-    private $identity;
+    private ?Identity $identity = null;
 
     public function get(ServerRequest $request): Identity
     {

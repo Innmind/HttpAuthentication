@@ -15,7 +15,7 @@ use Innmind\Url\Authority\UserInformation\{
 
 final class ViaUrlAuthority implements Authenticator
 {
-    private $resolve;
+    private Resolver $resolve;
 
     public function __construct(Resolver $resolve)
     {

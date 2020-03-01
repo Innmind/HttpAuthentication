@@ -7,7 +7,7 @@ use Innmind\Http\Message\ServerRequest;
 
 final class ViaSession implements Authenticator
 {
-    private $authenticate;
+    private Authenticator $authenticate;
 
     public function __construct(Authenticator $authenticate)
     {

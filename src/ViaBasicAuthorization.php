@@ -14,7 +14,7 @@ use Innmind\Http\{
 
 final class ViaBasicAuthorization implements Authenticator
 {
-    private $resolve;
+    private Resolver $resolve;
 
     public function __construct(Resolver $resolve)
     {
