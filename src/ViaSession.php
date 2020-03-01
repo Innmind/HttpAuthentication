@@ -31,7 +31,7 @@ final class ViaSession implements Authenticator
                     $this->value = $value;
                 }
 
-                public function __toString(): string
+                public function toString(): string
                 {
                     return (string) $this->value;
                 }
