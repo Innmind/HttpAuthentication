@@ -3,6 +3,9 @@ declare(strict_types = 1);
 
 namespace Innmind\HttpAuthentication;
 
+/**
+ * @return array{validate_authorization_header: callable(Authenticator): Authenticator, any: callable(Authenticator...): Authenticator, via_url_authority: callable(ViaUrlAuthority\Resolver): Authenticator, via_basic_authorization: callable(ViaBasicAuthorization\Resolver): Authenticator, via_form: callable(ViaForm\Resolver): Authenticator, via_storage: callable(ViaStorage\Storage): (callable(Authenticator): Authenticator), via_authorization: callable(ViaAuthorization\Resolver): Authenticator}
+ */
 function bootstrap(): array
 {
     return [
