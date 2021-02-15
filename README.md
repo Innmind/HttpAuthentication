@@ -1,6 +1,6 @@
 # Http authentication
 
-[![Build Status](https://github.com/Innmind/HttpAuthentication/workflows/CI/badge.svg)](https://github.com/Innmind/HttpAuthentication/actions?query=workflow%3ACI)
+[![Build Status](https://github.com/Innmind/HttpAuthentication/workflows/CI/badge.svg?branch=master)](https://github.com/Innmind/HttpAuthentication/actions?query=workflow%3ACI)
 [![codecov](https://codecov.io/gh/Innmind/HttpAuthentication/branch/develop/graph/badge.svg)](https://codecov.io/gh/Innmind/HttpAuthentication)
 [![Type Coverage](https://shepherd.dev/github/Innmind/HttpAuthentication/coverage.svg)](https://shepherd.dev/github/Innmind/HttpAuthentication)
 

@@ -30,6 +30,7 @@ final class ViaBasicAuthorization implements Authenticator
 
         $header = $request->headers()->get('Authorization');
 
+        /** @psalm-suppress RedundantCondition */
         if (!$header instanceof Authorization) {
             // because it should mean the value doesn't respect the standard
             throw new NotSupported;
@@ -41,7 +42,7 @@ final class ViaBasicAuthorization implements Authenticator
             throw new NotSupported;
         }
 
-        [$user, $password] = explode(':', base64_decode($value->parameter()));
+        [$user, $password] = \explode(':', \base64_decode($value->parameter(), true));
 
         return ($this->resolve)($user, $password);
     }

@@ -106,7 +106,7 @@ class ViaBasicAuthorizationTest extends TestCase
             ->expects($this->any())
             ->method('headers')
             ->willReturn(Headers::of(
-                Authorization::of('Basic', base64_encode('foo:bar')),
+                Authorization::of('Basic', \base64_encode('foo:bar')),
             ));
 
         $this->assertSame($identity, $authenticate($request));

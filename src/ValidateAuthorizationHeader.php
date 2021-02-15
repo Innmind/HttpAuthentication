@@ -26,6 +26,7 @@ final class ValidateAuthorizationHeader implements Authenticator
 
         $header = $request->headers()->get('Authorization');
 
+        /** @psalm-suppress RedundantCondition */
         if (!$header instanceof Authorization) {
             throw new MalformedAuthorizationHeader;
         }
