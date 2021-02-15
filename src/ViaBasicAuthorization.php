@@ -42,7 +42,7 @@ final class ViaBasicAuthorization implements Authenticator
             throw new NotSupported;
         }
 
-        [$user, $password] = explode(':', base64_decode($value->parameter()));
+        [$user, $password] = \explode(':', \base64_decode($value->parameter(), true));
 
         return ($this->resolve)($user, $password);
     }
