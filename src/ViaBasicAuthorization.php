@@ -30,6 +30,7 @@ final class ViaBasicAuthorization implements Authenticator
 
         $header = $request->headers()->get('Authorization');
 
+        /** @psalm-suppress RedundantCondition */
         if (!$header instanceof Authorization) {
             // because it should mean the value doesn't respect the standard
             throw new NotSupported;
