@@ -5,10 +5,13 @@ namespace Innmind\HttpAuthentication\ViaStorage;
 
 use Innmind\HttpAuthentication\Identity;
 use Innmind\Http\Message\ServerRequest;
+use Innmind\Immutable\Maybe;
 
 interface Storage
 {
-    public function get(ServerRequest $request): Identity;
-    public function contains(ServerRequest $request): bool;
+    /**
+     * @return Maybe<Identity>
+     */
+    public function get(ServerRequest $request): Maybe;
     public function set(ServerRequest $request, Identity $identity): void;
 }

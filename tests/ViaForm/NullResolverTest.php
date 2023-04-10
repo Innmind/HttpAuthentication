@@ -6,7 +6,6 @@ namespace Tests\Innmind\HttpAuthentication\ViaForm;
 use Innmind\HttpAuthentication\{
     ViaForm\NullResolver,
     ViaForm\Resolver,
-    Exception\AuthenticatorNotImplemented,
 };
 use Innmind\Http\Message\Form;
 use PHPUnit\Framework\TestCase;
@@ -20,8 +19,9 @@ class NullResolverTest extends TestCase
 
     public function testInvokation()
     {
-        $this->expectException(AuthenticatorNotImplemented::class);
-
-        (new NullResolver)(new Form);
+        $this->assertNull((new NullResolver)(Form::of([]))->match(
+            static fn($identity) => $identity,
+            static fn() => null,
+        ));
     }
 }

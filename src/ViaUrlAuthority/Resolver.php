@@ -8,8 +8,12 @@ use Innmind\Url\Authority\UserInformation\{
     User,
     Password,
 };
+use Innmind\Immutable\Maybe;
 
 interface Resolver
 {
-    public function __invoke(User $user, Password $password): Identity;
+    /**
+     * @return Maybe<Identity>
+     */
+    public function __invoke(User $user, Password $password): Maybe;
 }

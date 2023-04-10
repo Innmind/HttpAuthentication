@@ -9,13 +9,13 @@ use Innmind\HttpAuthentication\{
     ViaForm\Resolver,
     ViaForm\NullResolver,
     Identity,
-    Exception\NotSupported,
 };
 use Innmind\Http\Message\{
     ServerRequest,
     Method,
     Form,
 };
+use Innmind\Immutable\Maybe;
 use PHPUnit\Framework\TestCase;
 
 class ViaFormTest extends TestCase
@@ -24,14 +24,14 @@ class ViaFormTest extends TestCase
     {
         $this->assertInstanceOf(
             Authenticator::class,
-            new ViaForm(new NullResolver)
+            new ViaForm(new NullResolver),
         );
     }
 
-    public function testThrowWhenNotPostRequest()
+    public function testReturnNothingWhenNotPostRequest()
     {
         $authenticate = new ViaForm(
-            $resolver = $this->createMock(Resolver::class)
+            $resolver = $this->createMock(Resolver::class),
         );
         $resolver
             ->expects($this->never())
@@ -40,24 +40,25 @@ class ViaFormTest extends TestCase
         $request
             ->expects($this->once())
             ->method('method')
-            ->willReturn(Method::get());
+            ->willReturn(Method::get);
 
-        $this->expectException(NotSupported::class);
-
-        $authenticate($request);
+        $this->assertNull($authenticate($request)->match(
+            static fn($identity) => $identity,
+            static fn() => null,
+        ));
     }
 
     public function testInvokation()
     {
         $authenticate = new ViaForm(
-            $resolver = $this->createMock(Resolver::class)
+            $resolver = $this->createMock(Resolver::class),
         );
         $request = $this->createMock(ServerRequest::class);
-        $form = Form::of();
+        $form = Form::of([]);
         $request
             ->expects($this->once())
             ->method('method')
-            ->willReturn(Method::post());
+            ->willReturn(Method::post);
         $request
             ->expects($this->any())
             ->method('form')
@@ -66,8 +67,11 @@ class ViaFormTest extends TestCase
             ->expects($this->once())
             ->method('__invoke')
             ->with($form)
-            ->willReturn($identity = $this->createMock(Identity::class));
+            ->willReturn(Maybe::just($identity = $this->createMock(Identity::class)));
 
-        $this->assertSame($identity, $authenticate($request));
+        $this->assertSame($identity, $authenticate($request)->match(
+            static fn($identity) => $identity,
+            static fn() => null,
+        ));
     }
 }

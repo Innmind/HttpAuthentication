@@ -20,9 +20,10 @@ class NullStorageTest extends TestCase
 
     public function testGet()
     {
-        $this->expectException(\TypeError::class);
-
-        (new NullStorage)->get($this->createMock(ServerRequest::class));
+        $this->assertNull((new NullStorage)->get($this->createMock(ServerRequest::class))->match(
+            static fn($identity) => $identity,
+            static fn() => null,
+        ));
     }
 
     public function testHas()
@@ -30,9 +31,15 @@ class NullStorageTest extends TestCase
         $storage = new NullStorage;
         $request = $this->createMock(ServerRequest::class);
 
-        $this->assertFalse($storage->contains($request));
+        $this->assertFalse($storage->get($request)->match(
+            static fn() => true,
+            static fn() => false,
+        ));
         $storage->set($request, $this->createMock(Identity::class));
-        $this->assertFalse($storage->contains($request));
+        $this->assertFalse($storage->get($request)->match(
+            static fn() => true,
+            static fn() => false,
+        ));
     }
 
     public function testSet()
@@ -42,11 +49,12 @@ class NullStorageTest extends TestCase
 
         $this->assertNull($storage->set(
             $request,
-            $this->createMock(Identity::class)
+            $this->createMock(Identity::class),
         ));
 
-        $this->expectException(\TypeError::class);
-
-        $storage->get($request);
+        $this->assertNull($storage->get($request)->match(
+            static fn($identity) => $identity,
+            static fn() => null,
+        ));
     }
 }

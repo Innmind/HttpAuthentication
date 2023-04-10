@@ -3,11 +3,11 @@ declare(strict_types = 1);
 
 namespace Innmind\HttpAuthentication;
 
-use Innmind\HttpAuthentication\Exception\MalformedAuthorizationHeader;
 use Innmind\Http\{
     Message\ServerRequest,
     Header\Authorization,
 };
+use Innmind\Immutable\Maybe;
 
 final class ValidateAuthorizationHeader implements Authenticator
 {
@@ -18,19 +18,15 @@ final class ValidateAuthorizationHeader implements Authenticator
         $this->authenticate = $authenticate;
     }
 
-    public function __invoke(ServerRequest $request): Identity
+    public function __invoke(ServerRequest $request): Maybe
     {
         if (!$request->headers()->contains('Authorization')) {
             return ($this->authenticate)($request);
         }
 
-        $header = $request->headers()->get('Authorization');
-
-        /** @psalm-suppress RedundantCondition */
-        if (!$header instanceof Authorization) {
-            throw new MalformedAuthorizationHeader;
-        }
-
-        return ($this->authenticate)($request);
+        return $request
+            ->headers()
+            ->find(Authorization::class)
+            ->flatMap(fn() => ($this->authenticate)($request));
     }
 }

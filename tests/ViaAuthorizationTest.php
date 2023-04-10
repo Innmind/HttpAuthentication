@@ -9,7 +9,6 @@ use Innmind\HttpAuthentication\{
     ViaAuthorization\NullResolver,
     Authenticator,
     Identity,
-    Exception\NotSupported,
 };
 use Innmind\Http\{
     Message\ServerRequest,
@@ -19,6 +18,7 @@ use Innmind\Http\{
     Header\Authorization,
     Header\AuthorizationValue,
 };
+use Innmind\Immutable\Maybe;
 use PHPUnit\Framework\TestCase;
 
 class ViaAuthorizationTest extends TestCase
@@ -27,14 +27,14 @@ class ViaAuthorizationTest extends TestCase
     {
         $this->assertInstanceOf(
             Authenticator::class,
-            new ViaAuthorization(new NullResolver)
+            new ViaAuthorization(new NullResolver),
         );
     }
 
-    public function testThrowWhenNoAuthorizationHeader()
+    public function testReturnNothingWhenNoAuthorizationHeader()
     {
         $authenticate = new ViaAuthorization(
-            $resolver = $this->createMock(Resolver::class)
+            $resolver = $this->createMock(Resolver::class),
         );
         $resolver
             ->expects($this->never())
@@ -45,15 +45,16 @@ class ViaAuthorizationTest extends TestCase
             ->method('headers')
             ->willReturn(Headers::of());
 
-        $this->expectException(NotSupported::class);
-
-        $authenticate($request);
+        $this->assertNull($authenticate($request)->match(
+            static fn($identity) => $identity,
+            static fn() => null,
+        ));
     }
 
-    public function testThrowWhenAuthorizationHeaderNotParsedCorrectly()
+    public function testReturnNothingWhenAuthorizationHeaderNotParsedCorrectly()
     {
         $authenticate = new ViaAuthorization(
-            $resolver = $this->createMock(Resolver::class)
+            $resolver = $this->createMock(Resolver::class),
         );
         $resolver
             ->expects($this->never())
@@ -63,33 +64,37 @@ class ViaAuthorizationTest extends TestCase
             ->expects($this->any())
             ->method('headers')
             ->willReturn(Headers::of(
-                new Header('Authorization', new Value('Basic foo'))
+                new Header('Authorization', new Value('Basic foo')),
             ));
 
-        $this->expectException(NotSupported::class);
-
-        $authenticate($request);
+        $this->assertNull($authenticate($request)->match(
+            static fn($identity) => $identity,
+            static fn() => null,
+        ));
     }
 
     public function testInvokation()
     {
         $authenticate = new ViaAuthorization(
-            $resolver = $this->createMock(Resolver::class)
+            $resolver = $this->createMock(Resolver::class),
         );
         $expected = new AuthorizationValue('Bearer', 'foo');
         $resolver
             ->expects($this->once())
             ->method('__invoke')
             ->with($expected)
-            ->willReturn($identity = $this->createMock(Identity::class));
+            ->willReturn(Maybe::just($identity = $this->createMock(Identity::class)));
         $request = $this->createMock(ServerRequest::class);
         $request
             ->expects($this->any())
             ->method('headers')
             ->willReturn(Headers::of(
-                new Authorization($expected)
+                new Authorization($expected),
             ));
 
-        $this->assertSame($identity, $authenticate($request));
+        $this->assertSame($identity, $authenticate($request)->match(
+            static fn($identity) => $identity,
+            static fn() => null,
+        ));
     }
 }
