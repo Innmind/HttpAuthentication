@@ -5,6 +5,7 @@ namespace Innmind\HttpAuthentication;
 
 use Innmind\HttpAuthentication\ViaStorage\Storage;
 use Innmind\Http\Message\ServerRequest;
+use Innmind\Immutable\Maybe;
 
 final class ViaStorage implements Authenticator
 {
@@ -17,15 +18,19 @@ final class ViaStorage implements Authenticator
         $this->storage = $storage;
     }
 
-    public function __invoke(ServerRequest $request): Identity
+    public function __invoke(ServerRequest $request): Maybe
     {
-        if ($this->storage->contains($request)) {
-            return $this->storage->get($request);
-        }
+        return $this
+            ->storage
+            ->get($request)
+            ->otherwise(
+                fn() => ($this->authenticate)($request)->map(
+                    function($identity) use ($request) {
+                        $this->storage->set($request, $identity);
 
-        $identity = ($this->authenticate)($request);
-        $this->storage->set($request, $identity);
-
-        return $identity;
+                        return $identity;
+                    },
+                ),
+            );
     }
 }

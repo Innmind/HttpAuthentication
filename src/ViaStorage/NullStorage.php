@@ -5,18 +5,14 @@ namespace Innmind\HttpAuthentication\ViaStorage;
 
 use Innmind\HttpAuthentication\Identity;
 use Innmind\Http\Message\ServerRequest;
+use Innmind\Immutable\Maybe;
 
 final class NullStorage implements Storage
 {
-    /** @psalm-suppress InvalidReturnType */
-    public function get(ServerRequest $request): Identity
+    public function get(ServerRequest $request): Maybe
     {
-        // let throw a TypeError
-    }
-
-    public function contains(ServerRequest $request): bool
-    {
-        return false;
+        /** @var Maybe<Identity> */
+        return Maybe::nothing();
     }
 
     public function set(ServerRequest $request, Identity $identity): void

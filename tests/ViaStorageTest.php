@@ -10,6 +10,7 @@ use Innmind\HttpAuthentication\{
     Identity,
 };
 use Innmind\Http\Message\ServerRequest;
+use Innmind\Immutable\Maybe;
 use PHPUnit\Framework\TestCase;
 
 class ViaStorageTest extends TestCase
@@ -20,8 +21,8 @@ class ViaStorageTest extends TestCase
             Authenticator::class,
             new ViaStorage(
                 $this->createMock(Authenticator::class),
-                new InMemory
-            )
+                new InMemory,
+            ),
         );
     }
 
@@ -29,26 +30,35 @@ class ViaStorageTest extends TestCase
     {
         $authenticate = new ViaStorage(
             $inner = $this->createMock(Authenticator::class),
-            $storage = new InMemory
+            $storage = new InMemory,
         );
         $request = $this->createMock(ServerRequest::class);
         $inner
             ->expects($this->once())
             ->method('__invoke')
             ->with($request)
-            ->willReturn($identity = $this->createMock(Identity::class));
+            ->willReturn(Maybe::just($identity = $this->createMock(Identity::class)));
 
-        $this->assertSame($identity, $authenticate($request));
-        $this->assertTrue($storage->contains($request));
+        $this->assertSame($identity, $authenticate($request)->match(
+            static fn($identity) => $identity,
+            static fn() => null,
+        ));
+        $this->assertTrue($storage->get($request)->match(
+            static fn() => true,
+            static fn() => false,
+        ));
         // second time is to make sure it uses the storage
-        $this->assertSame($identity, $authenticate($request));
+        $this->assertSame($identity, $authenticate($request)->match(
+            static fn($identity) => $identity,
+            static fn() => null,
+        ));
     }
 
     public function testAuthenticateViaStorage()
     {
         $authenticate = new ViaStorage(
             $inner = $this->createMock(Authenticator::class),
-            $storage = new InMemory
+            $storage = new InMemory,
         );
         $identity = $this->createMock(Identity::class);
         $request = $this->createMock(ServerRequest::class);
@@ -57,6 +67,9 @@ class ViaStorageTest extends TestCase
             ->method('__invoke');
         $storage->set($request, $identity);
 
-        $this->assertSame($identity, $authenticate($request));
+        $this->assertSame($identity, $authenticate($request)->match(
+            static fn($identity) => $identity,
+            static fn() => null,
+        ));
     }
 }

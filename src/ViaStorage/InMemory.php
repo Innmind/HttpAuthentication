@@ -5,25 +5,28 @@ namespace Innmind\HttpAuthentication\ViaStorage;
 
 use Innmind\HttpAuthentication\Identity;
 use Innmind\Http\Message\ServerRequest;
+use Innmind\Immutable\{
+    Map,
+    Maybe,
+};
 
 final class InMemory implements Storage
 {
-    private ?Identity $identity = null;
+    /** @var Map<ServerRequest, Identity> */
+    private Map $identities;
 
-    /** @psalm-suppress InvalidNullableReturnType */
-    public function get(ServerRequest $request): Identity
+    public function __construct()
     {
-        /** @psalm-suppress NullableReturnStatement */
-        return $this->identity;
+        $this->identities = Map::of();
     }
 
-    public function contains(ServerRequest $request): bool
+    public function get(ServerRequest $request): Maybe
     {
-        return $this->identity instanceof Identity;
+        return $this->identities->get($request);
     }
 
     public function set(ServerRequest $request, Identity $identity): void
     {
-        $this->identity = $identity;
+        $this->identities = ($this->identities)($request, $identity);
     }
 }

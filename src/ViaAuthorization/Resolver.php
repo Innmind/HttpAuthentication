@@ -5,8 +5,12 @@ namespace Innmind\HttpAuthentication\ViaAuthorization;
 
 use Innmind\HttpAuthentication\Identity;
 use Innmind\Http\Header\AuthorizationValue;
+use Innmind\Immutable\Maybe;
 
 interface Resolver
 {
-    public function __invoke(AuthorizationValue $value): Identity;
+    /**
+     * @return Maybe<Identity>
+     */
+    public function __invoke(AuthorizationValue $value): Maybe;
 }

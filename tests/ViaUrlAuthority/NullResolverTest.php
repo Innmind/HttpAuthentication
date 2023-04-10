@@ -6,7 +6,6 @@ namespace Tests\Innmind\HttpAuthentication\ViaUrlAuthority;
 use Innmind\HttpAuthentication\{
     ViaUrlAuthority\NullResolver,
     ViaUrlAuthority\Resolver,
-    Exception\AuthenticatorNotImplemented,
 };
 use Innmind\Url\Authority\UserInformation\{
     User,
@@ -23,11 +22,12 @@ class NullResolverTest extends TestCase
 
     public function testInvokation()
     {
-        $this->expectException(AuthenticatorNotImplemented::class);
-
-        (new NullResolver)(
+        $this->assertNull((new NullResolver)(
             User::none(),
             Password::none(),
-        );
+        )->match(
+            static fn($identity) => $identity,
+            static fn() => null,
+        ));
     }
 }

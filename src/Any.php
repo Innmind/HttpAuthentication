@@ -3,33 +3,33 @@ declare(strict_types = 1);
 
 namespace Innmind\HttpAuthentication;
 
-use Innmind\HttpAuthentication\Exception\{
-    NotSupported,
-    AuthenticatorNotImplemented,
-    NoAuthenticationProvided,
-};
 use Innmind\Http\Message\ServerRequest;
+use Innmind\Immutable\{
+    Sequence,
+    Maybe,
+};
 
 final class Any implements Authenticator
 {
-    /** @var list<Authenticator> */
-    private array $authenticators;
+    /** @var Sequence<Authenticator> */
+    private Sequence $authenticators;
 
+    /**
+     * @no-named-arguments
+     */
     public function __construct(Authenticator ...$authenticators)
     {
-        $this->authenticators = $authenticators;
+        $this->authenticators = Sequence::of(...$authenticators);
     }
 
-    public function __invoke(ServerRequest $request): Identity
+    public function __invoke(ServerRequest $request): Maybe
     {
-        foreach ($this->authenticators as $authenticate) {
-            try {
-                return $authenticate($request);
-            } catch (NotSupported | AuthenticatorNotImplemented $e) {
-                // attempt next strategy
-            }
-        }
-
-        throw new NoAuthenticationProvided;
+        /** @var Maybe<Identity> */
+        return $this->authenticators->reduce(
+            Maybe::nothing(),
+            static fn(Maybe $identity, $authenticate) => $identity->otherwise(
+                static fn() => $authenticate($request),
+            ),
+        );
     }
 }
