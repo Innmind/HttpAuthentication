@@ -15,6 +15,9 @@ final class Any implements Authenticator
     /** @var list<Authenticator> */
     private array $authenticators;
 
+    /**
+     * @no-named-arguments
+     */
     public function __construct(Authenticator ...$authenticators)
     {
         $this->authenticators = $authenticators;

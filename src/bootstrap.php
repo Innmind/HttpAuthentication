@@ -13,6 +13,7 @@ function bootstrap(): array
             return new ValidateAuthorizationHeader($authenticate);
         },
         'any' => static function(Authenticator ...$authenticate): Authenticator {
+            /** @psalm-suppress NamedArgumentNotAllowed */
             return new Any(...$authenticate);
         },
         'via_url_authority' => static function(ViaUrlAuthority\Resolver $resolver): Authenticator {

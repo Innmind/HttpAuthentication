@@ -40,7 +40,7 @@ class ViaFormTest extends TestCase
         $request
             ->expects($this->once())
             ->method('method')
-            ->willReturn(Method::get());
+            ->willReturn(Method::get);
 
         $this->expectException(NotSupported::class);
 
@@ -53,11 +53,11 @@ class ViaFormTest extends TestCase
             $resolver = $this->createMock(Resolver::class),
         );
         $request = $this->createMock(ServerRequest::class);
-        $form = Form::of();
+        $form = Form::of([]);
         $request
             ->expects($this->once())
             ->method('method')
-            ->willReturn(Method::post());
+            ->willReturn(Method::post);
         $request
             ->expects($this->any())
             ->method('form')

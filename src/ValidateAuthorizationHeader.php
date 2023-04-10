@@ -24,13 +24,12 @@ final class ValidateAuthorizationHeader implements Authenticator
             return ($this->authenticate)($request);
         }
 
-        $header = $request->headers()->get('Authorization');
-
-        /** @psalm-suppress RedundantCondition */
-        if (!$header instanceof Authorization) {
-            throw new MalformedAuthorizationHeader;
-        }
-
-        return ($this->authenticate)($request);
+        return $request
+            ->headers()
+            ->find(Authorization::class)
+            ->match(
+                fn() => ($this->authenticate)($request),
+                static fn() => throw new MalformedAuthorizationHeader,
+            );
     }
 }
