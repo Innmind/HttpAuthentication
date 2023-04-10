@@ -20,8 +20,8 @@ class ViaStorageTest extends TestCase
             Authenticator::class,
             new ViaStorage(
                 $this->createMock(Authenticator::class),
-                new InMemory
-            )
+                new InMemory,
+            ),
         );
     }
 
@@ -29,7 +29,7 @@ class ViaStorageTest extends TestCase
     {
         $authenticate = new ViaStorage(
             $inner = $this->createMock(Authenticator::class),
-            $storage = new InMemory
+            $storage = new InMemory,
         );
         $request = $this->createMock(ServerRequest::class);
         $inner
@@ -48,7 +48,7 @@ class ViaStorageTest extends TestCase
     {
         $authenticate = new ViaStorage(
             $inner = $this->createMock(Authenticator::class),
-            $storage = new InMemory
+            $storage = new InMemory,
         );
         $identity = $this->createMock(Identity::class);
         $request = $this->createMock(ServerRequest::class);

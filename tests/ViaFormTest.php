@@ -24,14 +24,14 @@ class ViaFormTest extends TestCase
     {
         $this->assertInstanceOf(
             Authenticator::class,
-            new ViaForm(new NullResolver)
+            new ViaForm(new NullResolver),
         );
     }
 
     public function testThrowWhenNotPostRequest()
     {
         $authenticate = new ViaForm(
-            $resolver = $this->createMock(Resolver::class)
+            $resolver = $this->createMock(Resolver::class),
         );
         $resolver
             ->expects($this->never())
@@ -50,7 +50,7 @@ class ViaFormTest extends TestCase
     public function testInvokation()
     {
         $authenticate = new ViaForm(
-            $resolver = $this->createMock(Resolver::class)
+            $resolver = $this->createMock(Resolver::class),
         );
         $request = $this->createMock(ServerRequest::class);
         $form = Form::of();

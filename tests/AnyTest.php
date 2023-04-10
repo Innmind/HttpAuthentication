@@ -34,7 +34,7 @@ class AnyTest extends TestCase
             $notSupported = $this->createMock(Authenticator::class),
             $notImplemented = $this->createMock(Authenticator::class),
             $expected = $this->createMock(Authenticator::class),
-            $notCalled = $this->createMock(Authenticator::class)
+            $notCalled = $this->createMock(Authenticator::class),
         );
         $request = $this->createMock(ServerRequest::class);
         $notSupported

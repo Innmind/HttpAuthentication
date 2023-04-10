@@ -27,14 +27,14 @@ class ViaAuthorizationTest extends TestCase
     {
         $this->assertInstanceOf(
             Authenticator::class,
-            new ViaAuthorization(new NullResolver)
+            new ViaAuthorization(new NullResolver),
         );
     }
 
     public function testThrowWhenNoAuthorizationHeader()
     {
         $authenticate = new ViaAuthorization(
-            $resolver = $this->createMock(Resolver::class)
+            $resolver = $this->createMock(Resolver::class),
         );
         $resolver
             ->expects($this->never())
@@ -53,7 +53,7 @@ class ViaAuthorizationTest extends TestCase
     public function testThrowWhenAuthorizationHeaderNotParsedCorrectly()
     {
         $authenticate = new ViaAuthorization(
-            $resolver = $this->createMock(Resolver::class)
+            $resolver = $this->createMock(Resolver::class),
         );
         $resolver
             ->expects($this->never())
@@ -63,7 +63,7 @@ class ViaAuthorizationTest extends TestCase
             ->expects($this->any())
             ->method('headers')
             ->willReturn(Headers::of(
-                new Header('Authorization', new Value('Basic foo'))
+                new Header('Authorization', new Value('Basic foo')),
             ));
 
         $this->expectException(NotSupported::class);
@@ -74,7 +74,7 @@ class ViaAuthorizationTest extends TestCase
     public function testInvokation()
     {
         $authenticate = new ViaAuthorization(
-            $resolver = $this->createMock(Resolver::class)
+            $resolver = $this->createMock(Resolver::class),
         );
         $expected = new AuthorizationValue('Bearer', 'foo');
         $resolver
@@ -87,7 +87,7 @@ class ViaAuthorizationTest extends TestCase
             ->expects($this->any())
             ->method('headers')
             ->willReturn(Headers::of(
-                new Authorization($expected)
+                new Authorization($expected),
             ));
 
         $this->assertSame($identity, $authenticate($request));

@@ -21,14 +21,14 @@ class ViaUrlAuthorityTest extends TestCase
     {
         $this->assertInstanceOf(
             Authenticator::class,
-            new ViaUrlAuthority(new NullResolver)
+            new ViaUrlAuthority(new NullResolver),
         );
     }
 
     public function testThrowWhenNoUserProvidedInTheUrl()
     {
         $authenticate = new ViaUrlAuthority(
-            $resolver = $this->createMock(Resolver::class)
+            $resolver = $this->createMock(Resolver::class),
         );
         $url = Url::of('https://localhost/');
         $resolver
@@ -48,7 +48,7 @@ class ViaUrlAuthorityTest extends TestCase
     public function testInvokation()
     {
         $authenticate = new ViaUrlAuthority(
-            $resolver = $this->createMock(Resolver::class)
+            $resolver = $this->createMock(Resolver::class),
         );
         $url = Url::of('https://user:password@localhost/');
         $user = $url->authority()->userInformation()->user();

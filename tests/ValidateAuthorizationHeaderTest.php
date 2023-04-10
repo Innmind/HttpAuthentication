@@ -26,15 +26,15 @@ class ValidateAuthorizationHeaderTest extends TestCase
         $this->assertInstanceOf(
             Authenticator::class,
             new ValidateAuthorizationHeader(
-                $this->createMock(Authenticator::class)
-            )
+                $this->createMock(Authenticator::class),
+            ),
         );
     }
 
     public function testForwardAuthenticationWhenNoHeader()
     {
         $validate = new ValidateAuthorizationHeader(
-            $authenticate = $this->createMock(Authenticator::class)
+            $authenticate = $this->createMock(Authenticator::class),
         );
         $request = $this->createMock(ServerRequest::class);
         $request
@@ -53,7 +53,7 @@ class ValidateAuthorizationHeaderTest extends TestCase
     public function testThrowWhenHeaderNotOfExpectedType()
     {
         $validate = new ValidateAuthorizationHeader(
-            $authenticate = $this->createMock(Authenticator::class)
+            $authenticate = $this->createMock(Authenticator::class),
         );
         $request = $this->createMock(ServerRequest::class);
         $request
@@ -62,8 +62,8 @@ class ValidateAuthorizationHeaderTest extends TestCase
             ->willReturn(Headers::of(
                 new Header(
                     'Authorization',
-                    new Value('Bearer foo')
-                )
+                    new Value('Bearer foo'),
+                ),
             ));
         $authenticate
             ->expects($this->never())
@@ -77,7 +77,7 @@ class ValidateAuthorizationHeaderTest extends TestCase
     public function testForwardAuthenticationWhenValidHeader()
     {
         $validate = new ValidateAuthorizationHeader(
-            $authenticate = $this->createMock(Authenticator::class)
+            $authenticate = $this->createMock(Authenticator::class),
         );
         $request = $this->createMock(ServerRequest::class);
         $request
@@ -85,8 +85,8 @@ class ValidateAuthorizationHeaderTest extends TestCase
             ->method('headers')
             ->willReturn(Headers::of(
                 new Authorization(
-                    new AuthorizationValue('Bearer', 'foo')
-                )
+                    new AuthorizationValue('Bearer', 'foo'),
+                ),
             ));
         $authenticate
             ->expects($this->once())

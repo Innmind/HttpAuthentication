@@ -42,7 +42,7 @@ class NullStorageTest extends TestCase
 
         $this->assertNull($storage->set(
             $request,
-            $this->createMock(Identity::class)
+            $this->createMock(Identity::class),
         ));
 
         $this->expectException(\TypeError::class);
