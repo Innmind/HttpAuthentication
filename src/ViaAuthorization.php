@@ -3,16 +3,16 @@ declare(strict_types = 1);
 
 namespace Innmind\HttpAuthentication;
 
-use Innmind\HttpAuthentication\{
-    ViaAuthorization\Resolver,
-    Exception\NotSupported,
-};
+use Innmind\HttpAuthentication\ViaAuthorization\Resolver;
 use Innmind\Http\{
     Message\ServerRequest,
     Header\Authorization,
     Header\AuthorizationValue,
 };
-use Innmind\Immutable\Predicate\Instance;
+use Innmind\Immutable\{
+    Maybe,
+    Predicate\Instance,
+};
 
 final class ViaAuthorization implements Authenticator
 {
@@ -23,17 +23,13 @@ final class ViaAuthorization implements Authenticator
         $this->resolve = $resolve;
     }
 
-    public function __invoke(ServerRequest $request): Identity
+    public function __invoke(ServerRequest $request): Maybe
     {
         return $request
             ->headers()
             ->find(Authorization::class)
             ->flatMap(static fn($header) => $header->values()->find(static fn() => true))
             ->keep(Instance::of(AuthorizationValue::class))
-            ->map(fn($value) => ($this->resolve)($value))
-            ->match(
-                static fn($identity) => $identity,
-                static fn() => throw new NotSupported,
-            );
+            ->map(fn($value) => ($this->resolve)($value));
     }
 }

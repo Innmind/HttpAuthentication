@@ -7,7 +7,6 @@ use Innmind\HttpAuthentication\{
     ValidateAuthorizationHeader,
     Authenticator,
     Identity,
-    Exception\MalformedAuthorizationHeader,
 };
 use Innmind\Http\{
     Message\ServerRequest,
@@ -17,6 +16,7 @@ use Innmind\Http\{
     Header\Header,
     Header\Value\Value,
 };
+use Innmind\Immutable\Maybe;
 use PHPUnit\Framework\TestCase;
 
 class ValidateAuthorizationHeaderTest extends TestCase
@@ -45,12 +45,15 @@ class ValidateAuthorizationHeaderTest extends TestCase
             ->expects($this->once())
             ->method('__invoke')
             ->with($request)
-            ->willReturn($expected = $this->createMock(Identity::class));
+            ->willReturn(Maybe::just($expected = $this->createMock(Identity::class)));
 
-        $this->assertSame($expected, $validate($request));
+        $this->assertSame($expected, $validate($request)->match(
+            static fn($identity) => $identity,
+            static fn() => null,
+        ));
     }
 
-    public function testThrowWhenHeaderNotOfExpectedType()
+    public function testReturnNothingWhenHeaderNotOfExpectedType()
     {
         $validate = new ValidateAuthorizationHeader(
             $authenticate = $this->createMock(Authenticator::class),
@@ -69,9 +72,10 @@ class ValidateAuthorizationHeaderTest extends TestCase
             ->expects($this->never())
             ->method('__invoke');
 
-        $this->expectException(MalformedAuthorizationHeader::class);
-
-        $validate($request);
+        $this->assertNull($validate($request)->match(
+            static fn($identity) => $identity,
+            static fn() => null,
+        ));
     }
 
     public function testForwardAuthenticationWhenValidHeader()
@@ -92,8 +96,11 @@ class ValidateAuthorizationHeaderTest extends TestCase
             ->expects($this->once())
             ->method('__invoke')
             ->with($request)
-            ->willReturn($expected = $this->createMock(Identity::class));
+            ->willReturn(Maybe::just($expected = $this->createMock(Identity::class)));
 
-        $this->assertSame($expected, $validate($request));
+        $this->assertSame($expected, $validate($request)->match(
+            static fn($identity) => $identity,
+            static fn() => null,
+        ));
     }
 }

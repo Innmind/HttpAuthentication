@@ -10,6 +10,7 @@ use Innmind\HttpAuthentication\{
     Identity,
 };
 use Innmind\Http\Message\ServerRequest;
+use Innmind\Immutable\Maybe;
 use PHPUnit\Framework\TestCase;
 
 class ViaStorageTest extends TestCase
@@ -36,12 +37,18 @@ class ViaStorageTest extends TestCase
             ->expects($this->once())
             ->method('__invoke')
             ->with($request)
-            ->willReturn($identity = $this->createMock(Identity::class));
+            ->willReturn(Maybe::just($identity = $this->createMock(Identity::class)));
 
-        $this->assertSame($identity, $authenticate($request));
+        $this->assertSame($identity, $authenticate($request)->match(
+            static fn($identity) => $identity,
+            static fn() => null,
+        ));
         $this->assertTrue($storage->contains($request));
         // second time is to make sure it uses the storage
-        $this->assertSame($identity, $authenticate($request));
+        $this->assertSame($identity, $authenticate($request)->match(
+            static fn($identity) => $identity,
+            static fn() => null,
+        ));
     }
 
     public function testAuthenticateViaStorage()
@@ -57,6 +64,9 @@ class ViaStorageTest extends TestCase
             ->method('__invoke');
         $storage->set($request, $identity);
 
-        $this->assertSame($identity, $authenticate($request));
+        $this->assertSame($identity, $authenticate($request)->match(
+            static fn($identity) => $identity,
+            static fn() => null,
+        ));
     }
 }

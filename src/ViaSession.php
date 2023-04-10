@@ -4,6 +4,7 @@ declare(strict_types = 1);
 namespace Innmind\HttpAuthentication;
 
 use Innmind\Http\Message\ServerRequest;
+use Innmind\Immutable\Maybe;
 
 final class ViaSession implements Authenticator
 {
@@ -18,13 +19,13 @@ final class ViaSession implements Authenticator
         throw new \LogicException;
     }
 
-    public function __invoke(ServerRequest $request): Identity
+    public function __invoke(ServerRequest $request): Maybe
     {
         \session_start();
 
         if (isset($_SESSION['identity'])) {
             /** @psalm-suppress MixedArgument */
-            return new class($_SESSION['identity']) implements Identity {
+            return Maybe::just(new class($_SESSION['identity']) implements Identity {
                 private string $value;
 
                 public function __construct(string $value)
@@ -36,13 +37,14 @@ final class ViaSession implements Authenticator
                 {
                     return $this->value;
                 }
-            };
+            });
         }
 
-        $identity = ($this->authenticate)($request);
+        return ($this->authenticate)($request)
+            ->map(static function($identity) {
+                $_SESSION['identity'] = $identity->toString();
 
-        $_SESSION['identity'] = $identity->toString();
-
-        return $identity;
+                return $identity;
+            });
     }
 }

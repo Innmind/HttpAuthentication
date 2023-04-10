@@ -9,7 +9,6 @@ use Innmind\HttpAuthentication\{
     ViaBasicAuthorization\NullResolver,
     Authenticator,
     Identity,
-    Exception\NotSupported,
 };
 use Innmind\Http\{
     Message\ServerRequest,
@@ -30,7 +29,7 @@ class ViaBasicAuthorizationTest extends TestCase
         );
     }
 
-    public function testThrowWhenNoAuthorizationHeader()
+    public function testReturnNothingWhenNoAuthorizationHeader()
     {
         $authenticate = new ViaBasicAuthorization(
             $resolver = $this->createMock(Resolver::class),
@@ -44,12 +43,13 @@ class ViaBasicAuthorizationTest extends TestCase
             ->method('headers')
             ->willReturn(Headers::of());
 
-        $this->expectException(NotSupported::class);
-
-        $authenticate($request);
+        $this->assertNull($authenticate($request)->match(
+            static fn($identity) => $identity,
+            static fn() => null,
+        ));
     }
 
-    public function testThrowWhenAuthorizationHeaderNotParsedCorrectly()
+    public function testReturnNothingWhenAuthorizationHeaderNotParsedCorrectly()
     {
         $authenticate = new ViaBasicAuthorization(
             $resolver = $this->createMock(Resolver::class),
@@ -65,12 +65,13 @@ class ViaBasicAuthorizationTest extends TestCase
                 new Header('Authorization', new Value('Basic foo')),
             ));
 
-        $this->expectException(NotSupported::class);
-
-        $authenticate($request);
+        $this->assertNull($authenticate($request)->match(
+            static fn($identity) => $identity,
+            static fn() => null,
+        ));
     }
 
-    public function testThrowWhenNotBasicAuthorization()
+    public function testReturnNothingWhenNotBasicAuthorization()
     {
         $authenticate = new ViaBasicAuthorization(
             $resolver = $this->createMock(Resolver::class),
@@ -86,9 +87,10 @@ class ViaBasicAuthorizationTest extends TestCase
                 Authorization::of('Bearer', 'foo'),
             ));
 
-        $this->expectException(NotSupported::class);
-
-        $authenticate($request);
+        $this->assertNull($authenticate($request)->match(
+            static fn($identity) => $identity,
+            static fn() => null,
+        ));
     }
 
     public function testInvokation()
@@ -109,6 +111,9 @@ class ViaBasicAuthorizationTest extends TestCase
                 Authorization::of('Basic', \base64_encode('foo:bar')),
             ));
 
-        $this->assertSame($identity, $authenticate($request));
+        $this->assertSame($identity, $authenticate($request)->match(
+            static fn($identity) => $identity,
+            static fn() => null,
+        ));
     }
 }

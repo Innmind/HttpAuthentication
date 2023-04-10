@@ -9,7 +9,6 @@ use Innmind\HttpAuthentication\{
     ViaForm\Resolver,
     ViaForm\NullResolver,
     Identity,
-    Exception\NotSupported,
 };
 use Innmind\Http\Message\{
     ServerRequest,
@@ -28,7 +27,7 @@ class ViaFormTest extends TestCase
         );
     }
 
-    public function testThrowWhenNotPostRequest()
+    public function testReturnNothingWhenNotPostRequest()
     {
         $authenticate = new ViaForm(
             $resolver = $this->createMock(Resolver::class),
@@ -42,9 +41,10 @@ class ViaFormTest extends TestCase
             ->method('method')
             ->willReturn(Method::get);
 
-        $this->expectException(NotSupported::class);
-
-        $authenticate($request);
+        $this->assertNull($authenticate($request)->match(
+            static fn($identity) => $identity,
+            static fn() => null,
+        ));
     }
 
     public function testInvokation()
@@ -68,6 +68,9 @@ class ViaFormTest extends TestCase
             ->with($form)
             ->willReturn($identity = $this->createMock(Identity::class));
 
-        $this->assertSame($identity, $authenticate($request));
+        $this->assertSame($identity, $authenticate($request)->match(
+            static fn($identity) => $identity,
+            static fn() => null,
+        ));
     }
 }

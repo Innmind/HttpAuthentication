@@ -9,7 +9,6 @@ use Innmind\HttpAuthentication\{
     ViaAuthorization\NullResolver,
     Authenticator,
     Identity,
-    Exception\NotSupported,
 };
 use Innmind\Http\{
     Message\ServerRequest,
@@ -31,7 +30,7 @@ class ViaAuthorizationTest extends TestCase
         );
     }
 
-    public function testThrowWhenNoAuthorizationHeader()
+    public function testReturnNothingWhenNoAuthorizationHeader()
     {
         $authenticate = new ViaAuthorization(
             $resolver = $this->createMock(Resolver::class),
@@ -45,12 +44,13 @@ class ViaAuthorizationTest extends TestCase
             ->method('headers')
             ->willReturn(Headers::of());
 
-        $this->expectException(NotSupported::class);
-
-        $authenticate($request);
+        $this->assertNull($authenticate($request)->match(
+            static fn($identity) => $identity,
+            static fn() => null,
+        ));
     }
 
-    public function testThrowWhenAuthorizationHeaderNotParsedCorrectly()
+    public function testReturnNothingWhenAuthorizationHeaderNotParsedCorrectly()
     {
         $authenticate = new ViaAuthorization(
             $resolver = $this->createMock(Resolver::class),
@@ -66,9 +66,10 @@ class ViaAuthorizationTest extends TestCase
                 new Header('Authorization', new Value('Basic foo')),
             ));
 
-        $this->expectException(NotSupported::class);
-
-        $authenticate($request);
+        $this->assertNull($authenticate($request)->match(
+            static fn($identity) => $identity,
+            static fn() => null,
+        ));
     }
 
     public function testInvokation()
@@ -90,6 +91,9 @@ class ViaAuthorizationTest extends TestCase
                 new Authorization($expected),
             ));
 
-        $this->assertSame($identity, $authenticate($request));
+        $this->assertSame($identity, $authenticate($request)->match(
+            static fn($identity) => $identity,
+            static fn() => null,
+        ));
     }
 }

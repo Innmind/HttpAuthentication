@@ -3,14 +3,12 @@ declare(strict_types = 1);
 
 namespace Innmind\HttpAuthentication;
 
-use Innmind\HttpAuthentication\{
-    ViaForm\Resolver,
-    Exception\NotSupported,
-};
+use Innmind\HttpAuthentication\ViaForm\Resolver;
 use Innmind\Http\Message\{
     ServerRequest,
     Method,
 };
+use Innmind\Immutable\Maybe;
 
 final class ViaForm implements Authenticator
 {
@@ -21,12 +19,10 @@ final class ViaForm implements Authenticator
         $this->resolve = $resolve;
     }
 
-    public function __invoke(ServerRequest $request): Identity
+    public function __invoke(ServerRequest $request): Maybe
     {
-        if ($request->method() !== Method::post) {
-            throw new NotSupported;
-        }
-
-        return ($this->resolve)($request->form());
+        return Maybe::just($request)
+            ->filter(static fn($request) => $request->method() === Method::post)
+            ->map(fn($request) => ($this->resolve)($request->form()));
     }
 }
