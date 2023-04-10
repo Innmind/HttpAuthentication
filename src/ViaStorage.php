@@ -20,15 +20,17 @@ final class ViaStorage implements Authenticator
 
     public function __invoke(ServerRequest $request): Maybe
     {
-        if ($this->storage->contains($request)) {
-            return Maybe::just($this->storage->get($request));
-        }
+        return $this
+            ->storage
+            ->get($request)
+            ->otherwise(
+                fn() => ($this->authenticate)($request)->map(
+                    function($identity) use ($request) {
+                        $this->storage->set($request, $identity);
 
-        return ($this->authenticate)($request)
-            ->map(function($identity) use ($request) {
-                $this->storage->set($request, $identity);
-
-                return $identity;
-            });
+                        return $identity;
+                    },
+                ),
+            );
     }
 }

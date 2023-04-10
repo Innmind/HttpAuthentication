@@ -20,9 +20,10 @@ class InMemoryTest extends TestCase
 
     public function testGet()
     {
-        $this->expectException(\TypeError::class);
-
-        (new InMemory)->get($this->createMock(ServerRequest::class));
+        $this->assertNull((new InMemory)->get($this->createMock(ServerRequest::class))->match(
+            static fn($identity) => $identity,
+            static fn() => null,
+        ));
     }
 
     public function testHas()
@@ -30,9 +31,15 @@ class InMemoryTest extends TestCase
         $storage = new InMemory;
         $request = $this->createMock(ServerRequest::class);
 
-        $this->assertFalse($storage->contains($request));
+        $this->assertFalse($storage->get($request)->match(
+            static fn() => true,
+            static fn() => false,
+        ));
         $storage->set($request, $this->createMock(Identity::class));
-        $this->assertTrue($storage->contains($request));
+        $this->assertTrue($storage->get($request)->match(
+            static fn() => true,
+            static fn() => false,
+        ));
     }
 
     public function testSet()
@@ -42,6 +49,9 @@ class InMemoryTest extends TestCase
         $request = $this->createMock(ServerRequest::class);
 
         $this->assertNull($storage->set($request, $identity));
-        $this->assertSame($identity, $storage->get($request));
+        $this->assertSame($identity, $storage->get($request)->match(
+            static fn($identity) => $identity,
+            static fn() => null,
+        ));
     }
 }

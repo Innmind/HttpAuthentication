@@ -43,7 +43,10 @@ class ViaStorageTest extends TestCase
             static fn($identity) => $identity,
             static fn() => null,
         ));
-        $this->assertTrue($storage->contains($request));
+        $this->assertTrue($storage->get($request)->match(
+            static fn() => true,
+            static fn() => false,
+        ));
         // second time is to make sure it uses the storage
         $this->assertSame($identity, $authenticate($request)->match(
             static fn($identity) => $identity,
