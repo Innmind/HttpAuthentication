@@ -12,6 +12,7 @@ use Innmind\HttpAuthentication\{
 };
 use Innmind\Url\Url;
 use Innmind\Http\Message\ServerRequest;
+use Innmind\Immutable\Maybe;
 use PHPUnit\Framework\TestCase;
 
 class ViaUrlAuthorityTest extends TestCase
@@ -57,7 +58,7 @@ class ViaUrlAuthorityTest extends TestCase
             ->expects($this->once())
             ->method('__invoke')
             ->with($user, $password)
-            ->willReturn($identity = $this->createMock(Identity::class));
+            ->willReturn(Maybe::just($identity = $this->createMock(Identity::class)));
         $request = $this->createMock(ServerRequest::class);
         $request
             ->expects($this->any())

@@ -3,16 +3,15 @@ declare(strict_types = 1);
 
 namespace Innmind\HttpAuthentication\ViaForm;
 
-use Innmind\HttpAuthentication\{
-    Identity,
-    Exception\AuthenticatorNotImplemented,
-};
+use Innmind\HttpAuthentication\Identity;
 use Innmind\Http\Message\Form;
+use Innmind\Immutable\Maybe;
 
 final class NullResolver implements Resolver
 {
-    public function __invoke(Form $form): Identity
+    public function __invoke(Form $form): Maybe
     {
-        throw new AuthenticatorNotImplemented;
+        /** @var Maybe<Identity> */
+        return Maybe::nothing();
     }
 }

@@ -15,6 +15,7 @@ use Innmind\Http\Message\{
     Method,
     Form,
 };
+use Innmind\Immutable\Maybe;
 use PHPUnit\Framework\TestCase;
 
 class ViaFormTest extends TestCase
@@ -66,7 +67,7 @@ class ViaFormTest extends TestCase
             ->expects($this->once())
             ->method('__invoke')
             ->with($form)
-            ->willReturn($identity = $this->createMock(Identity::class));
+            ->willReturn(Maybe::just($identity = $this->createMock(Identity::class)));
 
         $this->assertSame($identity, $authenticate($request)->match(
             static fn($identity) => $identity,

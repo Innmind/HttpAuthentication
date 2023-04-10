@@ -30,6 +30,6 @@ final class ViaUrlAuthority implements Authenticator
             return Maybe::nothing();
         }
 
-        return Maybe::just(($this->resolve)($user, $password));
+        return ($this->resolve)($user, $password);
     }
 }

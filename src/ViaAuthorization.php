@@ -30,6 +30,6 @@ final class ViaAuthorization implements Authenticator
             ->find(Authorization::class)
             ->flatMap(static fn($header) => $header->values()->find(static fn() => true))
             ->keep(Instance::of(AuthorizationValue::class))
-            ->map(fn($value) => ($this->resolve)($value));
+            ->flatMap(fn($value) => ($this->resolve)($value));
     }
 }

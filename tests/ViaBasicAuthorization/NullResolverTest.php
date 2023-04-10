@@ -6,7 +6,6 @@ namespace Tests\Innmind\HttpAuthentication\ViaBasicAuthorization;
 use Innmind\HttpAuthentication\{
     ViaBasicAuthorization\NullResolver,
     ViaBasicAuthorization\Resolver,
-    Exception\AuthenticatorNotImplemented,
 };
 use PHPUnit\Framework\TestCase;
 
@@ -19,8 +18,9 @@ class NullResolverTest extends TestCase
 
     public function testInvokation()
     {
-        $this->expectException(AuthenticatorNotImplemented::class);
-
-        (new NullResolver)('user', 'password');
+        $this->assertNull((new NullResolver)('user', 'password')->match(
+            static fn($identity) => $identity,
+            static fn() => null,
+        ));
     }
 }

@@ -23,6 +23,6 @@ final class ViaForm implements Authenticator
     {
         return Maybe::just($request)
             ->filter(static fn($request) => $request->method() === Method::post)
-            ->map(fn($request) => ($this->resolve)($request->form()));
+            ->flatMap(fn($request) => ($this->resolve)($request->form()));
     }
 }
