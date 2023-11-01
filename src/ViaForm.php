@@ -4,7 +4,7 @@ declare(strict_types = 1);
 namespace Innmind\HttpAuthentication;
 
 use Innmind\HttpAuthentication\ViaForm\Resolver;
-use Innmind\Http\Message\{
+use Innmind\Http\{
     ServerRequest,
     Method,
 };

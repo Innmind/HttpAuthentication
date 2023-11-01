@@ -5,7 +5,7 @@ namespace Innmind\HttpAuthentication;
 
 use Innmind\HttpAuthentication\ViaAuthorization\Resolver;
 use Innmind\Http\{
-    Message\ServerRequest,
+    ServerRequest,
     Header\Authorization,
     Header\AuthorizationValue,
 };

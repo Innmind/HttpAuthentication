@@ -8,7 +8,12 @@ use Innmind\HttpAuthentication\{
     ViaStorage\Storage,
     Identity,
 };
-use Innmind\Http\Message\ServerRequest;
+use Innmind\Http\{
+    ServerRequest,
+    Method,
+    ProtocolVersion,
+};
+use Innmind\Url\Url;
 use PHPUnit\Framework\TestCase;
 
 class NullStorageTest extends TestCase
@@ -20,7 +25,13 @@ class NullStorageTest extends TestCase
 
     public function testGet()
     {
-        $this->assertNull((new NullStorage)->get($this->createMock(ServerRequest::class))->match(
+        $request = ServerRequest::of(
+            Url::of('/'),
+            Method::get,
+            ProtocolVersion::v11,
+        );
+
+        $this->assertNull((new NullStorage)->get($request)->match(
             static fn($identity) => $identity,
             static fn() => null,
         ));
@@ -29,7 +40,11 @@ class NullStorageTest extends TestCase
     public function testHas()
     {
         $storage = new NullStorage;
-        $request = $this->createMock(ServerRequest::class);
+        $request = ServerRequest::of(
+            Url::of('/'),
+            Method::get,
+            ProtocolVersion::v11,
+        );
 
         $this->assertFalse($storage->get($request)->match(
             static fn() => true,
@@ -45,7 +60,11 @@ class NullStorageTest extends TestCase
     public function testSet()
     {
         $storage = new NullStorage;
-        $request = $this->createMock(ServerRequest::class);
+        $request = ServerRequest::of(
+            Url::of('/'),
+            Method::get,
+            ProtocolVersion::v11,
+        );
 
         $this->assertNull($storage->set(
             $request,

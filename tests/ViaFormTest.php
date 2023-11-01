@@ -10,11 +10,13 @@ use Innmind\HttpAuthentication\{
     ViaForm\NullResolver,
     Identity,
 };
-use Innmind\Http\Message\{
+use Innmind\Http\{
     ServerRequest,
     Method,
-    Form,
+    ProtocolVersion,
+    ServerRequest\Form,
 };
+use Innmind\Url\Url;
 use Innmind\Immutable\Maybe;
 use PHPUnit\Framework\TestCase;
 
@@ -36,11 +38,11 @@ class ViaFormTest extends TestCase
         $resolver
             ->expects($this->never())
             ->method('__invoke');
-        $request = $this->createMock(ServerRequest::class);
-        $request
-            ->expects($this->once())
-            ->method('method')
-            ->willReturn(Method::get);
+        $request = ServerRequest::of(
+            Url::of('/'),
+            Method::get,
+            ProtocolVersion::v11,
+        );
 
         $this->assertNull($authenticate($request)->match(
             static fn($identity) => $identity,
@@ -53,20 +55,15 @@ class ViaFormTest extends TestCase
         $authenticate = new ViaForm(
             $resolver = $this->createMock(Resolver::class),
         );
-        $request = $this->createMock(ServerRequest::class);
-        $form = Form::of([]);
-        $request
-            ->expects($this->once())
-            ->method('method')
-            ->willReturn(Method::post);
-        $request
-            ->expects($this->any())
-            ->method('form')
-            ->willReturn($form);
+        $request = ServerRequest::of(
+            Url::of('/'),
+            Method::post,
+            ProtocolVersion::v11,
+        );
         $resolver
             ->expects($this->once())
             ->method('__invoke')
-            ->with($form)
+            ->with($request->form())
             ->willReturn(Maybe::just($identity = $this->createMock(Identity::class)));
 
         $this->assertSame($identity, $authenticate($request)->match(

@@ -4,7 +4,7 @@ declare(strict_types = 1);
 namespace Innmind\HttpAuthentication;
 
 use Innmind\Http\{
-    Message\ServerRequest,
+    ServerRequest,
     Header\Authorization,
 };
 use Innmind\Immutable\Maybe;

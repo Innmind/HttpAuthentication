@@ -4,7 +4,7 @@ declare(strict_types = 1);
 namespace Innmind\HttpAuthentication;
 
 use Innmind\HttpAuthentication\ViaUrlAuthority\Resolver;
-use Innmind\Http\Message\ServerRequest;
+use Innmind\Http\ServerRequest;
 use Innmind\Url\Authority\UserInformation\{
     User,
     Password,

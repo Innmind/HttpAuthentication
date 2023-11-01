@@ -8,7 +8,12 @@ use Innmind\HttpAuthentication\{
     ViaStorage\Storage,
     Identity,
 };
-use Innmind\Http\Message\ServerRequest;
+use Innmind\Http\{
+    ServerRequest,
+    Method,
+    ProtocolVersion,
+};
+use Innmind\Url\Url;
 use PHPUnit\Framework\TestCase;
 
 class InMemoryTest extends TestCase
@@ -20,7 +25,13 @@ class InMemoryTest extends TestCase
 
     public function testGet()
     {
-        $this->assertNull((new InMemory)->get($this->createMock(ServerRequest::class))->match(
+        $request = ServerRequest::of(
+            Url::of('/'),
+            Method::get,
+            ProtocolVersion::v11,
+        );
+
+        $this->assertNull((new InMemory)->get($request)->match(
             static fn($identity) => $identity,
             static fn() => null,
         ));
@@ -29,7 +40,11 @@ class InMemoryTest extends TestCase
     public function testHas()
     {
         $storage = new InMemory;
-        $request = $this->createMock(ServerRequest::class);
+        $request = ServerRequest::of(
+            Url::of('/'),
+            Method::get,
+            ProtocolVersion::v11,
+        );
 
         $this->assertFalse($storage->get($request)->match(
             static fn() => true,
@@ -46,7 +61,11 @@ class InMemoryTest extends TestCase
     {
         $storage = new InMemory;
         $identity = $this->createMock(Identity::class);
-        $request = $this->createMock(ServerRequest::class);
+        $request = ServerRequest::of(
+            Url::of('/'),
+            Method::get,
+            ProtocolVersion::v11,
+        );
 
         $this->assertNull($storage->set($request, $identity));
         $this->assertSame($identity, $storage->get($request)->match(

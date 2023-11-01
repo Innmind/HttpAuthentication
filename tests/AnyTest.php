@@ -8,7 +8,12 @@ use Innmind\HttpAuthentication\{
     Authenticator,
     Identity,
 };
-use Innmind\Http\Message\ServerRequest;
+use Innmind\Http\{
+    ServerRequest,
+    Method,
+    ProtocolVersion,
+};
+use Innmind\Url\Url;
 use Innmind\Immutable\Maybe;
 use PHPUnit\Framework\TestCase;
 
@@ -21,7 +26,13 @@ class AnyTest extends TestCase
 
     public function testReturnNothingWhenNoAuthenticationProvided()
     {
-        $this->assertNull((new Any)($this->createMock(ServerRequest::class))->match(
+        $request = ServerRequest::of(
+            Url::of('/'),
+            Method::get,
+            ProtocolVersion::v11,
+        );
+
+        $this->assertNull((new Any)($request)->match(
             static fn($identity) => $identity,
             static fn() => null,
         ));
@@ -35,7 +46,11 @@ class AnyTest extends TestCase
             $expected = $this->createMock(Authenticator::class),
             $notCalled = $this->createMock(Authenticator::class),
         );
-        $request = $this->createMock(ServerRequest::class);
+        $request = ServerRequest::of(
+            Url::of('/'),
+            Method::get,
+            ProtocolVersion::v11,
+        );
         $notSupported
             ->expects($this->once())
             ->method('__invoke')

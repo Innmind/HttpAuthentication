@@ -9,7 +9,12 @@ use Innmind\HttpAuthentication\{
     Authenticator,
     Identity,
 };
-use Innmind\Http\Message\ServerRequest;
+use Innmind\Http\{
+    ServerRequest,
+    Method,
+    ProtocolVersion,
+};
+use Innmind\Url\Url;
 use Innmind\Immutable\Maybe;
 use PHPUnit\Framework\TestCase;
 
@@ -32,7 +37,11 @@ class ViaStorageTest extends TestCase
             $inner = $this->createMock(Authenticator::class),
             $storage = new InMemory,
         );
-        $request = $this->createMock(ServerRequest::class);
+        $request = ServerRequest::of(
+            Url::of('/'),
+            Method::get,
+            ProtocolVersion::v11,
+        );
         $inner
             ->expects($this->once())
             ->method('__invoke')
@@ -61,7 +70,11 @@ class ViaStorageTest extends TestCase
             $storage = new InMemory,
         );
         $identity = $this->createMock(Identity::class);
-        $request = $this->createMock(ServerRequest::class);
+        $request = ServerRequest::of(
+            Url::of('/'),
+            Method::get,
+            ProtocolVersion::v11,
+        );
         $inner
             ->expects($this->never())
             ->method('__invoke');

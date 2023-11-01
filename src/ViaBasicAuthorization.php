@@ -5,7 +5,7 @@ namespace Innmind\HttpAuthentication;
 
 use Innmind\HttpAuthentication\ViaBasicAuthorization\Resolver;
 use Innmind\Http\{
-    Message\ServerRequest,
+    ServerRequest,
     Header\Authorization,
 };
 use Innmind\Immutable\Maybe;
