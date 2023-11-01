@@ -11,13 +11,16 @@ use Innmind\HttpAuthentication\{
     Identity,
 };
 use Innmind\Http\{
-    Message\ServerRequest,
+    ServerRequest,
+    Method,
+    ProtocolVersion,
     Headers,
     Header\Header,
     Header\Value\Value,
     Header\Authorization,
     Header\AuthorizationValue,
 };
+use Innmind\Url\Url;
 use Innmind\Immutable\Maybe;
 use PHPUnit\Framework\TestCase;
 
@@ -39,11 +42,11 @@ class ViaAuthorizationTest extends TestCase
         $resolver
             ->expects($this->never())
             ->method('__invoke');
-        $request = $this->createMock(ServerRequest::class);
-        $request
-            ->expects($this->any())
-            ->method('headers')
-            ->willReturn(Headers::of());
+        $request = ServerRequest::of(
+            Url::of('/'),
+            Method::get,
+            ProtocolVersion::v11,
+        );
 
         $this->assertNull($authenticate($request)->match(
             static fn($identity) => $identity,
@@ -59,13 +62,14 @@ class ViaAuthorizationTest extends TestCase
         $resolver
             ->expects($this->never())
             ->method('__invoke');
-        $request = $this->createMock(ServerRequest::class);
-        $request
-            ->expects($this->any())
-            ->method('headers')
-            ->willReturn(Headers::of(
+        $request = ServerRequest::of(
+            Url::of('/'),
+            Method::get,
+            ProtocolVersion::v11,
+            Headers::of(
                 new Header('Authorization', new Value('Basic foo')),
-            ));
+            ),
+        );
 
         $this->assertNull($authenticate($request)->match(
             static fn($identity) => $identity,
@@ -84,13 +88,14 @@ class ViaAuthorizationTest extends TestCase
             ->method('__invoke')
             ->with($expected)
             ->willReturn(Maybe::just($identity = $this->createMock(Identity::class)));
-        $request = $this->createMock(ServerRequest::class);
-        $request
-            ->expects($this->any())
-            ->method('headers')
-            ->willReturn(Headers::of(
+        $request = ServerRequest::of(
+            Url::of('/'),
+            Method::get,
+            ProtocolVersion::v11,
+            Headers::of(
                 new Authorization($expected),
-            ));
+            ),
+        );
 
         $this->assertSame($identity, $authenticate($request)->match(
             static fn($identity) => $identity,

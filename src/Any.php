@@ -3,7 +3,7 @@ declare(strict_types = 1);
 
 namespace Innmind\HttpAuthentication;
 
-use Innmind\Http\Message\ServerRequest;
+use Innmind\Http\ServerRequest;
 use Innmind\Immutable\{
     Sequence,
     Maybe,

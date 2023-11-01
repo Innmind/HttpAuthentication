@@ -4,7 +4,7 @@ declare(strict_types = 1);
 namespace Innmind\HttpAuthentication;
 
 use Innmind\HttpAuthentication\ViaStorage\Storage;
-use Innmind\Http\Message\ServerRequest;
+use Innmind\Http\ServerRequest;
 use Innmind\Immutable\Maybe;
 
 final class ViaStorage implements Authenticator

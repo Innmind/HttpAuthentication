@@ -9,13 +9,16 @@ use Innmind\HttpAuthentication\{
     Identity,
 };
 use Innmind\Http\{
-    Message\ServerRequest,
+    ServerRequest,
+    Method,
+    ProtocolVersion,
     Headers,
     Header\Authorization,
     Header\AuthorizationValue,
     Header\Header,
     Header\Value\Value,
 };
+use Innmind\Url\Url;
 use Innmind\Immutable\Maybe;
 use PHPUnit\Framework\TestCase;
 
@@ -36,11 +39,11 @@ class ValidateAuthorizationHeaderTest extends TestCase
         $validate = new ValidateAuthorizationHeader(
             $authenticate = $this->createMock(Authenticator::class),
         );
-        $request = $this->createMock(ServerRequest::class);
-        $request
-            ->expects($this->any())
-            ->method('headers')
-            ->willReturn(Headers::of());
+        $request = ServerRequest::of(
+            Url::of('/'),
+            Method::get,
+            ProtocolVersion::v11,
+        );
         $authenticate
             ->expects($this->once())
             ->method('__invoke')
@@ -58,16 +61,17 @@ class ValidateAuthorizationHeaderTest extends TestCase
         $validate = new ValidateAuthorizationHeader(
             $authenticate = $this->createMock(Authenticator::class),
         );
-        $request = $this->createMock(ServerRequest::class);
-        $request
-            ->expects($this->any())
-            ->method('headers')
-            ->willReturn(Headers::of(
+        $request = ServerRequest::of(
+            Url::of('/'),
+            Method::get,
+            ProtocolVersion::v11,
+            Headers::of(
                 new Header(
                     'Authorization',
                     new Value('Bearer foo'),
                 ),
-            ));
+            ),
+        );
         $authenticate
             ->expects($this->never())
             ->method('__invoke');
@@ -83,15 +87,16 @@ class ValidateAuthorizationHeaderTest extends TestCase
         $validate = new ValidateAuthorizationHeader(
             $authenticate = $this->createMock(Authenticator::class),
         );
-        $request = $this->createMock(ServerRequest::class);
-        $request
-            ->expects($this->any())
-            ->method('headers')
-            ->willReturn(Headers::of(
+        $request = ServerRequest::of(
+            Url::of('/'),
+            Method::get,
+            ProtocolVersion::v11,
+            Headers::of(
                 new Authorization(
                     new AuthorizationValue('Bearer', 'foo'),
                 ),
-            ));
+            ),
+        );
         $authenticate
             ->expects($this->once())
             ->method('__invoke')

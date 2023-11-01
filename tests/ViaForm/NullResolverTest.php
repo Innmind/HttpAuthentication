@@ -7,7 +7,7 @@ use Innmind\HttpAuthentication\{
     ViaForm\NullResolver,
     ViaForm\Resolver,
 };
-use Innmind\Http\Message\Form;
+use Innmind\Http\ServerRequest\Form;
 use PHPUnit\Framework\TestCase;
 
 class NullResolverTest extends TestCase

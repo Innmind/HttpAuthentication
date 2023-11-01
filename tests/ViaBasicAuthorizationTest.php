@@ -11,12 +11,15 @@ use Innmind\HttpAuthentication\{
     Identity,
 };
 use Innmind\Http\{
-    Message\ServerRequest,
+    ServerRequest,
+    Method,
+    ProtocolVersion,
     Headers,
     Header\Header,
     Header\Value\Value,
     Header\Authorization,
 };
+use Innmind\Url\Url;
 use Innmind\Immutable\Maybe;
 use PHPUnit\Framework\TestCase;
 
@@ -38,11 +41,11 @@ class ViaBasicAuthorizationTest extends TestCase
         $resolver
             ->expects($this->never())
             ->method('__invoke');
-        $request = $this->createMock(ServerRequest::class);
-        $request
-            ->expects($this->any())
-            ->method('headers')
-            ->willReturn(Headers::of());
+        $request = ServerRequest::of(
+            Url::of('/'),
+            Method::get,
+            ProtocolVersion::v11,
+        );
 
         $this->assertNull($authenticate($request)->match(
             static fn($identity) => $identity,
@@ -58,13 +61,14 @@ class ViaBasicAuthorizationTest extends TestCase
         $resolver
             ->expects($this->never())
             ->method('__invoke');
-        $request = $this->createMock(ServerRequest::class);
-        $request
-            ->expects($this->any())
-            ->method('headers')
-            ->willReturn(Headers::of(
+        $request = ServerRequest::of(
+            Url::of('/'),
+            Method::get,
+            ProtocolVersion::v11,
+            Headers::of(
                 new Header('Authorization', new Value('Basic foo')),
-            ));
+            ),
+        );
 
         $this->assertNull($authenticate($request)->match(
             static fn($identity) => $identity,
@@ -80,13 +84,14 @@ class ViaBasicAuthorizationTest extends TestCase
         $resolver
             ->expects($this->never())
             ->method('__invoke');
-        $request = $this->createMock(ServerRequest::class);
-        $request
-            ->expects($this->any())
-            ->method('headers')
-            ->willReturn(Headers::of(
+        $request = ServerRequest::of(
+            Url::of('/'),
+            Method::get,
+            ProtocolVersion::v11,
+            Headers::of(
                 Authorization::of('Bearer', 'foo'),
-            ));
+            ),
+        );
 
         $this->assertNull($authenticate($request)->match(
             static fn($identity) => $identity,
@@ -104,13 +109,14 @@ class ViaBasicAuthorizationTest extends TestCase
             ->method('__invoke')
             ->with('foo', 'bar')
             ->willReturn(Maybe::just($identity = $this->createMock(Identity::class)));
-        $request = $this->createMock(ServerRequest::class);
-        $request
-            ->expects($this->any())
-            ->method('headers')
-            ->willReturn(Headers::of(
+        $request = ServerRequest::of(
+            Url::of('/'),
+            Method::get,
+            ProtocolVersion::v11,
+            Headers::of(
                 Authorization::of('Basic', \base64_encode('foo:bar')),
-            ));
+            ),
+        );
 
         $this->assertSame($identity, $authenticate($request)->match(
             static fn($identity) => $identity,

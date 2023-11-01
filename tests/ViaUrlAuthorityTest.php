@@ -11,7 +11,11 @@ use Innmind\HttpAuthentication\{
     Identity,
 };
 use Innmind\Url\Url;
-use Innmind\Http\Message\ServerRequest;
+use Innmind\Http\{
+    ServerRequest,
+    Method,
+    ProtocolVersion,
+};
 use Innmind\Immutable\Maybe;
 use PHPUnit\Framework\TestCase;
 
@@ -34,11 +38,11 @@ class ViaUrlAuthorityTest extends TestCase
         $resolver
             ->expects($this->never())
             ->method('__invoke');
-        $request = $this->createMock(ServerRequest::class);
-        $request
-            ->expects($this->any())
-            ->method('url')
-            ->willReturn($url);
+        $request = ServerRequest::of(
+            $url,
+            Method::get,
+            ProtocolVersion::v11,
+        );
 
         $this->assertNull($authenticate($request)->match(
             static fn($identity) => $identity,
@@ -59,11 +63,11 @@ class ViaUrlAuthorityTest extends TestCase
             ->method('__invoke')
             ->with($user, $password)
             ->willReturn(Maybe::just($identity = $this->createMock(Identity::class)));
-        $request = $this->createMock(ServerRequest::class);
-        $request
-            ->expects($this->any())
-            ->method('url')
-            ->willReturn($url);
+        $request = ServerRequest::of(
+            $url,
+            Method::get,
+            ProtocolVersion::v11,
+        );
 
         $this->assertSame($identity, $authenticate($request)->match(
             static fn($identity) => $identity,
