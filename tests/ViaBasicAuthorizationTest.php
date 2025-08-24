@@ -21,7 +21,7 @@ class ViaBasicAuthorizationTest extends TestCase
 {
     public function testReturnNothingWhenNoAuthorizationHeader()
     {
-        $authenticate = new ViaBasicAuthorization(
+        $authenticate = ViaBasicAuthorization::of(
             static fn() => throw new \Exception,
         );
         $request = ServerRequest::of(
@@ -38,7 +38,7 @@ class ViaBasicAuthorizationTest extends TestCase
 
     public function testReturnNothingWhenAuthorizationHeaderNotParsedCorrectly()
     {
-        $authenticate = new ViaBasicAuthorization(
+        $authenticate = ViaBasicAuthorization::of(
             static fn() => throw new \Exception,
         );
         $request = ServerRequest::of(
@@ -58,7 +58,7 @@ class ViaBasicAuthorizationTest extends TestCase
 
     public function testReturnNothingWhenNotBasicAuthorization()
     {
-        $authenticate = new ViaBasicAuthorization(
+        $authenticate = ViaBasicAuthorization::of(
             static fn() => throw new \Exception,
         );
         $request = ServerRequest::of(
@@ -78,7 +78,7 @@ class ViaBasicAuthorizationTest extends TestCase
 
     public function testInvokation()
     {
-        $authenticate = new ViaBasicAuthorization(
+        $authenticate = ViaBasicAuthorization::of(
             static fn($user, $password) => Attempt::result([$user, $password]),
         );
         $request = ServerRequest::of(

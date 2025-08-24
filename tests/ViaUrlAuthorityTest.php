@@ -17,7 +17,7 @@ class ViaUrlAuthorityTest extends TestCase
 {
     public function testReturnNothingWhenNoUserProvidedInTheUrl()
     {
-        $authenticate = new ViaUrlAuthority(
+        $authenticate = ViaUrlAuthority::of(
             static fn() => throw new \Exception,
         );
         $url = Url::of('https://localhost/');
@@ -35,7 +35,7 @@ class ViaUrlAuthorityTest extends TestCase
 
     public function testInvokation()
     {
-        $authenticate = new ViaUrlAuthority(
+        $authenticate = ViaUrlAuthority::of(
             static fn($user, $password) => Attempt::result([$user, $password]),
         );
         $url = Url::of('https://user:password@localhost/');

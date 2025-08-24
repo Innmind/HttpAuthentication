@@ -15,15 +15,11 @@ use Innmind\Immutable\Attempt;
  */
 final class ViaUrlAuthority
 {
-    /** @var callable(User, Password): Attempt<T> */
-    private $resolve;
-
     /**
-     * @param callable(User, Password): Attempt<T> $resolve
+     * @param \Closure(User, Password): Attempt<T> $resolve
      */
-    public function __construct(callable $resolve)
+    private function __construct(private \Closure $resolve)
     {
-        $this->resolve = $resolve;
     }
 
     /**
@@ -40,5 +36,17 @@ final class ViaUrlAuthority
         }
 
         return ($this->resolve)($user, $password);
+    }
+
+    /**
+     * @template A
+     *
+     * @param callable(User, Password): Attempt<A> $resolve
+     *
+     * @return self<A>
+     */
+    public static function of(callable $resolve): self
+    {
+        return new self(\Closure::fromCallable($resolve));
     }
 }

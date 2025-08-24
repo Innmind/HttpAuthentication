@@ -17,7 +17,7 @@ class ViaFormTest extends TestCase
 {
     public function testReturnNothingWhenNotPostRequest()
     {
-        $authenticate = new ViaForm(
+        $authenticate = ViaForm::of(
             static fn() => throw new \Exception,
         );
         $request = ServerRequest::of(
@@ -34,7 +34,7 @@ class ViaFormTest extends TestCase
 
     public function testInvokation()
     {
-        $authenticate = new ViaForm(
+        $authenticate = ViaForm::of(
             static fn($value) => Attempt::result($value),
         );
         $request = ServerRequest::of(
