@@ -9,10 +9,9 @@ use Innmind\Http\{
     Method,
     ProtocolVersion,
     Headers,
-    Header\Header,
-    Header\Value\Value,
+    Header,
+    Header\Value,
     Header\Authorization,
-    Header\AuthorizationValue,
 };
 use Innmind\Url\Url;
 use Innmind\Immutable\Attempt;
@@ -47,7 +46,7 @@ class ViaAuthorizationTest extends TestCase
             Method::get,
             ProtocolVersion::v11,
             Headers::of(
-                new Header('Authorization', new Value('Basic foo')),
+                Header::of('Authorization', Value::of('Basic foo')),
             ),
         );
 
@@ -62,13 +61,13 @@ class ViaAuthorizationTest extends TestCase
         $authenticate = new ViaAuthorization(
             static fn($value) => Attempt::result($value),
         );
-        $expected = new AuthorizationValue('Bearer', 'foo');
+        $expected = Authorization::of('Bearer', 'foo');
         $request = ServerRequest::of(
             Url::of('/'),
             Method::get,
             ProtocolVersion::v11,
             Headers::of(
-                new Authorization($expected),
+                $expected,
             ),
         );
 

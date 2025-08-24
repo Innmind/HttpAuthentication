@@ -6,6 +6,7 @@
 
 - All authenticators now return an `Innmind\Immutable\Attempt`
 - All authenticators can return any type inside the `Attempt`
+- Requires `innmind/foundation:~1.9`
 
 ### Removed
 

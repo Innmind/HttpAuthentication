@@ -9,8 +9,8 @@ use Innmind\Http\{
     Method,
     ProtocolVersion,
     Headers,
-    Header\Header,
-    Header\Value\Value,
+    Header,
+    Header\Value,
     Header\Authorization,
 };
 use Innmind\Url\Url;
@@ -46,7 +46,7 @@ class ViaBasicAuthorizationTest extends TestCase
             Method::get,
             ProtocolVersion::v11,
             Headers::of(
-                new Header('Authorization', new Value('Basic foo')),
+                Header::of('Authorization', Value::of('Basic foo')),
             ),
         );
 

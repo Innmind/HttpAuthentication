@@ -6,23 +6,19 @@ namespace Innmind\HttpAuthentication;
 use Innmind\Http\{
     ServerRequest,
     Header\Authorization,
-    Header\AuthorizationValue,
 };
-use Innmind\Immutable\{
-    Attempt,
-    Predicate\Instance,
-};
+use Innmind\Immutable\Attempt;
 
 /**
  * @template T
  */
 final class ViaAuthorization
 {
-    /** @var callable(AuthorizationValue): Attempt<T> */
+    /** @var callable(Authorization): Attempt<T> */
     private $resolve;
 
     /**
-     * @param callable(AuthorizationValue): Attempt<T> $resolve
+     * @param callable(Authorization): Attempt<T> $resolve
      */
     public function __construct(callable $resolve)
     {
@@ -37,8 +33,6 @@ final class ViaAuthorization
         return $request
             ->headers()
             ->find(Authorization::class)
-            ->flatMap(static fn($header) => $header->values()->find(static fn() => true))
-            ->keep(Instance::of(AuthorizationValue::class))
             ->attempt(static fn() => new \RuntimeException('Failed to resolve identity'))
             ->flatMap(fn($value) => ($this->resolve)($value));
     }
