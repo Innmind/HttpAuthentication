@@ -10,7 +10,7 @@ use Innmind\Url\Authority\UserInformation\{
 };
 use Innmind\Immutable\Attempt;
 
-final class ViaUrlAuthority implements Authenticator
+final class ViaUrlAuthority
 {
     /** @var callable(User, Password): Attempt<Identity> */
     private $resolve;
@@ -23,6 +23,9 @@ final class ViaUrlAuthority implements Authenticator
         $this->resolve = $resolve;
     }
 
+    /**
+     * @return Attempt<Identity>
+     */
     public function __invoke(ServerRequest $request): Attempt
     {
         $user = $request->url()->authority()->userInformation()->user();

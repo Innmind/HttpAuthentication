@@ -13,7 +13,7 @@ use Innmind\Immutable\{
     Attempt,
 };
 
-final class ViaForm implements Authenticator
+final class ViaForm
 {
     /** @var callable(Form): Attempt<Identity> */
     private $resolve;
@@ -26,6 +26,9 @@ final class ViaForm implements Authenticator
         $this->resolve = $resolve;
     }
 
+    /**
+     * @return Attempt<Identity>
+     */
     public function __invoke(ServerRequest $request): Attempt
     {
         return Maybe::just($request)

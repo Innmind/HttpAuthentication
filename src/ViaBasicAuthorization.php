@@ -9,7 +9,7 @@ use Innmind\Http\{
 };
 use Innmind\Immutable\Attempt;
 
-final class ViaBasicAuthorization implements Authenticator
+final class ViaBasicAuthorization
 {
     /** @var callable(string, string): Attempt<Identity> */
     private $resolve;
@@ -22,6 +22,9 @@ final class ViaBasicAuthorization implements Authenticator
         $this->resolve = $resolve;
     }
 
+    /**
+     * @return Attempt<Identity>
+     */
     public function __invoke(ServerRequest $request): Attempt
     {
         return $request

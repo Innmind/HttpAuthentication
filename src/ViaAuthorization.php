@@ -13,7 +13,7 @@ use Innmind\Immutable\{
     Predicate\Instance,
 };
 
-final class ViaAuthorization implements Authenticator
+final class ViaAuthorization
 {
     /** @var callable(AuthorizationValue): Attempt<Identity> */
     private $resolve;
@@ -26,6 +26,9 @@ final class ViaAuthorization implements Authenticator
         $this->resolve = $resolve;
     }
 
+    /**
+     * @return Attempt<Identity>
+     */
     public function __invoke(ServerRequest $request): Attempt
     {
         return $request

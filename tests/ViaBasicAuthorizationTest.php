@@ -5,7 +5,6 @@ namespace Tests\Innmind\HttpAuthentication;
 
 use Innmind\HttpAuthentication\{
     ViaBasicAuthorization,
-    Authenticator,
     Identity,
 };
 use Innmind\Http\{
@@ -23,14 +22,6 @@ use PHPUnit\Framework\TestCase;
 
 class ViaBasicAuthorizationTest extends TestCase
 {
-    public function testInterface()
-    {
-        $this->assertInstanceOf(
-            Authenticator::class,
-            new ViaBasicAuthorization(static fn() => null),
-        );
-    }
-
     public function testReturnNothingWhenNoAuthorizationHeader()
     {
         $authenticate = new ViaBasicAuthorization(

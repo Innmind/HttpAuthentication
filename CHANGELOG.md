@@ -4,7 +4,7 @@
 
 ### Changed
 
-- `Innmind\HttpAuthentication\Authenticator::__invoke()` now returns an `Innmind\Immutable\Attempt`
+- All authenticators now return an `Innmind\Immutable\Attempt`
 
 ### Removed
 
@@ -12,6 +12,7 @@
 - `Innmind\HttpAuthentication\ViaStorage`
 - `Innmind\HttpAuthentication\Any`
 - `Innmind\HttpAuthentication\ValidateAuthorizationHeader`
+- `Innmind\HttpAuthentication\Authenticator`
 
 ## 4.0.0 - 2023-11-01
 

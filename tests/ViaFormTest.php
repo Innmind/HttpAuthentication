@@ -5,7 +5,6 @@ namespace Tests\Innmind\HttpAuthentication;
 
 use Innmind\HttpAuthentication\{
     ViaForm,
-    Authenticator,
     Identity,
 };
 use Innmind\Http\{
@@ -19,14 +18,6 @@ use PHPUnit\Framework\TestCase;
 
 class ViaFormTest extends TestCase
 {
-    public function testInterface()
-    {
-        $this->assertInstanceOf(
-            Authenticator::class,
-            new ViaForm(static fn() => null),
-        );
-    }
-
     public function testReturnNothingWhenNotPostRequest()
     {
         $authenticate = new ViaForm(

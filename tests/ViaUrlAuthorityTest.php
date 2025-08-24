@@ -5,7 +5,6 @@ namespace Tests\Innmind\HttpAuthentication;
 
 use Innmind\HttpAuthentication\{
     ViaUrlAuthority,
-    Authenticator,
     Identity,
 };
 use Innmind\Url\Url;
@@ -19,14 +18,6 @@ use PHPUnit\Framework\TestCase;
 
 class ViaUrlAuthorityTest extends TestCase
 {
-    public function testInterface()
-    {
-        $this->assertInstanceOf(
-            Authenticator::class,
-            new ViaUrlAuthority(static fn() => null),
-        );
-    }
-
     public function testReturnNothingWhenNoUserProvidedInTheUrl()
     {
         $authenticate = new ViaUrlAuthority(
