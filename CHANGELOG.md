@@ -14,6 +14,7 @@
 - `Innmind\HttpAuthentication\Any`
 - `Innmind\HttpAuthentication\ValidateAuthorizationHeader`
 - `Innmind\HttpAuthentication\Authenticator`
+- `Innmind\HttpAuthentication\Identity`
 
 ## 4.0.0 - 2023-11-01
 
