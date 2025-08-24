@@ -14,7 +14,6 @@ use Innmind\Http\{
     ServerRequest,
     Method,
     ProtocolVersion,
-    ServerRequest\Form,
 };
 use Innmind\Url\Url;
 use Innmind\Immutable\Maybe;
