@@ -13,13 +13,16 @@ use Innmind\Immutable\{
     Predicate\Instance,
 };
 
+/**
+ * @template T
+ */
 final class ViaAuthorization
 {
-    /** @var callable(AuthorizationValue): Attempt<Identity> */
+    /** @var callable(AuthorizationValue): Attempt<T> */
     private $resolve;
 
     /**
-     * @param callable(AuthorizationValue): Attempt<Identity> $resolve
+     * @param callable(AuthorizationValue): Attempt<T> $resolve
      */
     public function __construct(callable $resolve)
     {
@@ -27,7 +30,7 @@ final class ViaAuthorization
     }
 
     /**
-     * @return Attempt<Identity>
+     * @return Attempt<T>
      */
     public function __invoke(ServerRequest $request): Attempt
     {

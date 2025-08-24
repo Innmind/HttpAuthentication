@@ -3,10 +3,7 @@ declare(strict_types = 1);
 
 namespace Tests\Innmind\HttpAuthentication;
 
-use Innmind\HttpAuthentication\{
-    ViaAuthorization,
-    Identity,
-};
+use Innmind\HttpAuthentication\ViaAuthorization;
 use Innmind\Http\{
     ServerRequest,
     Method,
@@ -62,9 +59,8 @@ class ViaAuthorizationTest extends TestCase
 
     public function testInvokation()
     {
-        $identity = $this->createMock(Identity::class);
         $authenticate = new ViaAuthorization(
-            static fn() => Attempt::result($identity),
+            static fn($value) => Attempt::result($value),
         );
         $expected = new AuthorizationValue('Bearer', 'foo');
         $request = ServerRequest::of(
@@ -76,7 +72,7 @@ class ViaAuthorizationTest extends TestCase
             ),
         );
 
-        $this->assertSame($identity, $authenticate($request)->match(
+        $this->assertSame($expected, $authenticate($request)->match(
             static fn($identity) => $identity,
             static fn() => null,
         ));

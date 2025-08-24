@@ -3,10 +3,7 @@ declare(strict_types = 1);
 
 namespace Tests\Innmind\HttpAuthentication;
 
-use Innmind\HttpAuthentication\{
-    ViaUrlAuthority,
-    Identity,
-};
+use Innmind\HttpAuthentication\ViaUrlAuthority;
 use Innmind\Url\Url;
 use Innmind\Http\{
     ServerRequest,
@@ -38,9 +35,8 @@ class ViaUrlAuthorityTest extends TestCase
 
     public function testInvokation()
     {
-        $identity = $this->createMock(Identity::class);
         $authenticate = new ViaUrlAuthority(
-            static fn() => Attempt::result($identity),
+            static fn($user, $password) => Attempt::result([$user, $password]),
         );
         $url = Url::of('https://user:password@localhost/');
         $user = $url->authority()->userInformation()->user();
@@ -51,7 +47,7 @@ class ViaUrlAuthorityTest extends TestCase
             ProtocolVersion::v11,
         );
 
-        $this->assertSame($identity, $authenticate($request)->match(
+        $this->assertSame([$user, $password], $authenticate($request)->match(
             static fn($identity) => $identity,
             static fn() => null,
         ));

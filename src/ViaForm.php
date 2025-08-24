@@ -13,13 +13,16 @@ use Innmind\Immutable\{
     Attempt,
 };
 
+/**
+ * @template T
+ */
 final class ViaForm
 {
-    /** @var callable(Form): Attempt<Identity> */
+    /** @var callable(Form): Attempt<T> */
     private $resolve;
 
     /**
-     * @param callable(Form): Attempt<Identity> $resolve
+     * @param callable(Form): Attempt<T> $resolve
      */
     public function __construct(callable $resolve)
     {
@@ -27,7 +30,7 @@ final class ViaForm
     }
 
     /**
-     * @return Attempt<Identity>
+     * @return Attempt<T>
      */
     public function __invoke(ServerRequest $request): Attempt
     {

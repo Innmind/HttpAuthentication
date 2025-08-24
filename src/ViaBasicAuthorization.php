@@ -9,13 +9,16 @@ use Innmind\Http\{
 };
 use Innmind\Immutable\Attempt;
 
+/**
+ * @template T
+ */
 final class ViaBasicAuthorization
 {
-    /** @var callable(string, string): Attempt<Identity> */
+    /** @var callable(string, string): Attempt<T> */
     private $resolve;
 
     /**
-     * @param callable(string, string): Attempt<Identity> $resolve
+     * @param callable(string, string): Attempt<T> $resolve
      */
     public function __construct(callable $resolve)
     {
@@ -23,7 +26,7 @@ final class ViaBasicAuthorization
     }
 
     /**
-     * @return Attempt<Identity>
+     * @return Attempt<T>
      */
     public function __invoke(ServerRequest $request): Attempt
     {

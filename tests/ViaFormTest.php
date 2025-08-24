@@ -3,10 +3,7 @@ declare(strict_types = 1);
 
 namespace Tests\Innmind\HttpAuthentication;
 
-use Innmind\HttpAuthentication\{
-    ViaForm,
-    Identity,
-};
+use Innmind\HttpAuthentication\ViaForm;
 use Innmind\Http\{
     ServerRequest,
     Method,
@@ -37,9 +34,8 @@ class ViaFormTest extends TestCase
 
     public function testInvokation()
     {
-        $identity = $this->createMock(Identity::class);
         $authenticate = new ViaForm(
-            static fn() => Attempt::result($identity),
+            static fn($value) => Attempt::result($value),
         );
         $request = ServerRequest::of(
             Url::of('/'),
@@ -47,7 +43,7 @@ class ViaFormTest extends TestCase
             ProtocolVersion::v11,
         );
 
-        $this->assertSame($identity, $authenticate($request)->match(
+        $this->assertSame($request->form(), $authenticate($request)->match(
             static fn($identity) => $identity,
             static fn() => null,
         ));

@@ -10,13 +10,16 @@ use Innmind\Url\Authority\UserInformation\{
 };
 use Innmind\Immutable\Attempt;
 
+/**
+ * @template T
+ */
 final class ViaUrlAuthority
 {
-    /** @var callable(User, Password): Attempt<Identity> */
+    /** @var callable(User, Password): Attempt<T> */
     private $resolve;
 
     /**
-     * @param callable(User, Password): Attempt<Identity> $resolve
+     * @param callable(User, Password): Attempt<T> $resolve
      */
     public function __construct(callable $resolve)
     {
@@ -24,7 +27,7 @@ final class ViaUrlAuthority
     }
 
     /**
-     * @return Attempt<Identity>
+     * @return Attempt<T>
      */
     public function __invoke(ServerRequest $request): Attempt
     {
@@ -32,7 +35,7 @@ final class ViaUrlAuthority
         $password = $request->url()->authority()->userInformation()->password();
 
         if ($user->equals(User::none()) && $password->equals(Password::none())) {
-            /** @var Attempt<Identity> */
+            /** @var Attempt<T> */
             return Attempt::error(new \RuntimeException('No authentication provided'));
         }
 

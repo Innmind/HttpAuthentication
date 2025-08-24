@@ -5,6 +5,7 @@
 ### Changed
 
 - All authenticators now return an `Innmind\Immutable\Attempt`
+- All authenticators can return any type inside the `Attempt`
 
 ### Removed
 
