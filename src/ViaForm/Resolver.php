@@ -5,12 +5,12 @@ namespace Innmind\HttpAuthentication\ViaForm;
 
 use Innmind\HttpAuthentication\Identity;
 use Innmind\Http\ServerRequest\Form;
-use Innmind\Immutable\Maybe;
+use Innmind\Immutable\Attempt;
 
 interface Resolver
 {
     /**
-     * @return Maybe<Identity>
+     * @return Attempt<Identity>
      */
-    public function __invoke(Form $form): Maybe;
+    public function __invoke(Form $form): Attempt;
 }

@@ -6,7 +6,7 @@ namespace Innmind\HttpAuthentication;
 use Innmind\Http\ServerRequest;
 use Innmind\Immutable\{
     Sequence,
-    Maybe,
+    Attempt,
 };
 
 final class Any implements Authenticator
@@ -22,12 +22,12 @@ final class Any implements Authenticator
         $this->authenticators = Sequence::of(...$authenticators);
     }
 
-    public function __invoke(ServerRequest $request): Maybe
+    public function __invoke(ServerRequest $request): Attempt
     {
-        /** @var Maybe<Identity> */
+        /** @var Attempt<Identity> */
         return $this->authenticators->reduce(
-            Maybe::nothing(),
-            static fn(Maybe $identity, $authenticate) => $identity->otherwise(
+            Attempt::error(new \LogicException('No authenticator defined')),
+            static fn(Attempt $identity, $authenticate) => $identity->recover(
                 static fn() => $authenticate($request),
             ),
         );

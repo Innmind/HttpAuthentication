@@ -8,7 +8,10 @@ use Innmind\Http\{
     ServerRequest,
     Method,
 };
-use Innmind\Immutable\Maybe;
+use Innmind\Immutable\{
+    Maybe,
+    Attempt,
+};
 
 final class ViaForm implements Authenticator
 {
@@ -19,10 +22,11 @@ final class ViaForm implements Authenticator
         $this->resolve = $resolve;
     }
 
-    public function __invoke(ServerRequest $request): Maybe
+    public function __invoke(ServerRequest $request): Attempt
     {
         return Maybe::just($request)
             ->filter(static fn($request) => $request->method() === Method::post)
+            ->attempt(static fn() => new \RuntimeException('Failed to resolve identity'))
             ->flatMap(fn($request) => ($this->resolve)($request->form()));
     }
 }

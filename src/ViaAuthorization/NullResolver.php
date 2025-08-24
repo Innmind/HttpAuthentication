@@ -5,13 +5,13 @@ namespace Innmind\HttpAuthentication\ViaAuthorization;
 
 use Innmind\HttpAuthentication\Identity;
 use Innmind\Http\Header\AuthorizationValue;
-use Innmind\Immutable\Maybe;
+use Innmind\Immutable\Attempt;
 
 final class NullResolver implements Resolver
 {
-    public function __invoke(AuthorizationValue $value): Maybe
+    public function __invoke(AuthorizationValue $value): Attempt
     {
-        /** @var Maybe<Identity> */
-        return Maybe::nothing();
+        /** @var Attempt<Identity> */
+        return Attempt::error(new \LogicException('Not implemented'));
     }
 }

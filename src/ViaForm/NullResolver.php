@@ -5,13 +5,13 @@ namespace Innmind\HttpAuthentication\ViaForm;
 
 use Innmind\HttpAuthentication\Identity;
 use Innmind\Http\ServerRequest\Form;
-use Innmind\Immutable\Maybe;
+use Innmind\Immutable\Attempt;
 
 final class NullResolver implements Resolver
 {
-    public function __invoke(Form $form): Maybe
+    public function __invoke(Form $form): Attempt
     {
-        /** @var Maybe<Identity> */
-        return Maybe::nothing();
+        /** @var Attempt<Identity> */
+        return Attempt::error(new \LogicException('Not implemented'));
     }
 }

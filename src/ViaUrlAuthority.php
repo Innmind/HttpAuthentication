@@ -9,7 +9,7 @@ use Innmind\Url\Authority\UserInformation\{
     User,
     Password,
 };
-use Innmind\Immutable\Maybe;
+use Innmind\Immutable\Attempt;
 
 final class ViaUrlAuthority implements Authenticator
 {
@@ -20,14 +20,14 @@ final class ViaUrlAuthority implements Authenticator
         $this->resolve = $resolve;
     }
 
-    public function __invoke(ServerRequest $request): Maybe
+    public function __invoke(ServerRequest $request): Attempt
     {
         $user = $request->url()->authority()->userInformation()->user();
         $password = $request->url()->authority()->userInformation()->password();
 
         if ($user->equals(User::none()) && $password->equals(Password::none())) {
-            /** @var Maybe<Identity> */
-            return Maybe::nothing();
+            /** @var Attempt<Identity> */
+            return Attempt::error(new \RuntimeException('No authentication provided'));
         }
 
         return ($this->resolve)($user, $password);

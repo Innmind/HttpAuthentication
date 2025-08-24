@@ -4,12 +4,12 @@ declare(strict_types = 1);
 namespace Innmind\HttpAuthentication;
 
 use Innmind\Http\ServerRequest;
-use Innmind\Immutable\Maybe;
+use Innmind\Immutable\Attempt;
 
 interface Authenticator
 {
     /**
-     * @return Maybe<Identity>
+     * @return Attempt<Identity>
      */
-    public function __invoke(ServerRequest $request): Maybe;
+    public function __invoke(ServerRequest $request): Attempt;
 }

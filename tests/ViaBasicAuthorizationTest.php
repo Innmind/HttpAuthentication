@@ -20,7 +20,7 @@ use Innmind\Http\{
     Header\Authorization,
 };
 use Innmind\Url\Url;
-use Innmind\Immutable\Maybe;
+use Innmind\Immutable\Attempt;
 use PHPUnit\Framework\TestCase;
 
 class ViaBasicAuthorizationTest extends TestCase
@@ -108,7 +108,7 @@ class ViaBasicAuthorizationTest extends TestCase
             ->expects($this->once())
             ->method('__invoke')
             ->with('foo', 'bar')
-            ->willReturn(Maybe::just($identity = $this->createMock(Identity::class)));
+            ->willReturn(Attempt::result($identity = $this->createMock(Identity::class)));
         $request = ServerRequest::of(
             Url::of('/'),
             Method::get,

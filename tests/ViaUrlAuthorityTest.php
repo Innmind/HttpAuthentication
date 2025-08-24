@@ -16,7 +16,7 @@ use Innmind\Http\{
     Method,
     ProtocolVersion,
 };
-use Innmind\Immutable\Maybe;
+use Innmind\Immutable\Attempt;
 use PHPUnit\Framework\TestCase;
 
 class ViaUrlAuthorityTest extends TestCase
@@ -62,7 +62,7 @@ class ViaUrlAuthorityTest extends TestCase
             ->expects($this->once())
             ->method('__invoke')
             ->with($user, $password)
-            ->willReturn(Maybe::just($identity = $this->createMock(Identity::class)));
+            ->willReturn(Attempt::result($identity = $this->createMock(Identity::class)));
         $request = ServerRequest::of(
             $url,
             Method::get,

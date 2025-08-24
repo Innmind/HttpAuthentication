@@ -5,7 +5,7 @@ namespace Innmind\HttpAuthentication;
 
 use Innmind\HttpAuthentication\ViaStorage\Storage;
 use Innmind\Http\ServerRequest;
-use Innmind\Immutable\Maybe;
+use Innmind\Immutable\Attempt;
 
 final class ViaStorage implements Authenticator
 {
@@ -18,12 +18,13 @@ final class ViaStorage implements Authenticator
         $this->storage = $storage;
     }
 
-    public function __invoke(ServerRequest $request): Maybe
+    public function __invoke(ServerRequest $request): Attempt
     {
         return $this
             ->storage
             ->get($request)
-            ->otherwise(
+            ->attempt(static fn() => new \RuntimeException('Identity not in storage'))
+            ->recover(
                 fn() => ($this->authenticate)($request)->map(
                     function($identity) use ($request) {
                         $this->storage->set($request, $identity);

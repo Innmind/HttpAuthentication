@@ -15,7 +15,7 @@ use Innmind\Http\{
     ProtocolVersion,
 };
 use Innmind\Url\Url;
-use Innmind\Immutable\Maybe;
+use Innmind\Immutable\Attempt;
 use PHPUnit\Framework\TestCase;
 
 class ViaStorageTest extends TestCase
@@ -46,7 +46,7 @@ class ViaStorageTest extends TestCase
             ->expects($this->once())
             ->method('__invoke')
             ->with($request)
-            ->willReturn(Maybe::just($identity = $this->createMock(Identity::class)));
+            ->willReturn(Attempt::result($identity = $this->createMock(Identity::class)));
 
         $this->assertSame($identity, $authenticate($request)->match(
             static fn($identity) => $identity,

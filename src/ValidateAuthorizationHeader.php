@@ -7,7 +7,7 @@ use Innmind\Http\{
     ServerRequest,
     Header\Authorization,
 };
-use Innmind\Immutable\Maybe;
+use Innmind\Immutable\Attempt;
 
 final class ValidateAuthorizationHeader implements Authenticator
 {
@@ -18,7 +18,7 @@ final class ValidateAuthorizationHeader implements Authenticator
         $this->authenticate = $authenticate;
     }
 
-    public function __invoke(ServerRequest $request): Maybe
+    public function __invoke(ServerRequest $request): Attempt
     {
         if (!$request->headers()->contains('Authorization')) {
             return ($this->authenticate)($request);
@@ -27,6 +27,7 @@ final class ValidateAuthorizationHeader implements Authenticator
         return $request
             ->headers()
             ->find(Authorization::class)
+            ->attempt(static fn() => new \RuntimeException('No Authorization header'))
             ->flatMap(fn() => ($this->authenticate)($request));
     }
 }
