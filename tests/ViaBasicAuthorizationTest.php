@@ -15,7 +15,7 @@ use Innmind\Http\{
 };
 use Innmind\Url\Url;
 use Innmind\Immutable\Attempt;
-use PHPUnit\Framework\TestCase;
+use Innmind\BlackBox\PHPUnit\Framework\TestCase;
 
 class ViaBasicAuthorizationTest extends TestCase
 {
