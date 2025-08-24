@@ -26,7 +26,7 @@ final class ViaForm implements Authenticator
     {
         return Maybe::just($request)
             ->filter(static fn($request) => $request->method() === Method::post)
-            ->flatMap(fn($request) => ($this->resolve)($request->form()))
-            ->attempt(static fn() => new \RuntimeException('Failed to resolve identity'));
+            ->attempt(static fn() => new \RuntimeException('Failed to resolve identity'))
+            ->flatMap(fn($request) => ($this->resolve)($request->form()));
     }
 }

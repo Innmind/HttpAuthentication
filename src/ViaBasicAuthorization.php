@@ -25,11 +25,11 @@ final class ViaBasicAuthorization implements Authenticator
             ->headers()
             ->find(Authorization::class)
             ->filter(static fn($header) => $header->scheme() === 'Basic')
+            ->attempt(static fn() => new \RuntimeException('Failed to resolve identity'))
             ->flatMap(function($header) {
                 [$user, $password] = \explode(':', \base64_decode($header->parameter(), true));
 
                 return ($this->resolve)($user, $password);
-            })
-            ->attempt(static fn() => new \RuntimeException('Failed to resolve identity'));
+            });
     }
 }

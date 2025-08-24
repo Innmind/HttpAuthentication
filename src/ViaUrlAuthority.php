@@ -30,8 +30,6 @@ final class ViaUrlAuthority implements Authenticator
             return Attempt::error(new \RuntimeException('No authentication provided'));
         }
 
-        return ($this->resolve)($user, $password)->attempt(
-            static fn() => new \RuntimeException('Failed to resolve identity'),
-        );
+        return ($this->resolve)($user, $password);
     }
 }

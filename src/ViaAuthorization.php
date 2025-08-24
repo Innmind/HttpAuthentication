@@ -30,7 +30,7 @@ final class ViaAuthorization implements Authenticator
             ->find(Authorization::class)
             ->flatMap(static fn($header) => $header->values()->find(static fn() => true))
             ->keep(Instance::of(AuthorizationValue::class))
-            ->flatMap(fn($value) => ($this->resolve)($value))
-            ->attempt(static fn() => new \RuntimeException('Failed to resolve identity'));
+            ->attempt(static fn() => new \RuntimeException('Failed to resolve identity'))
+            ->flatMap(fn($value) => ($this->resolve)($value));
     }
 }
