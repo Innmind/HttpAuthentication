@@ -9,6 +9,7 @@
 ### Removed
 
 - All resolvers have been replaced by `callable`s
+- `Innmind\HttpAuthentication\ViaStorage`
 
 ## 4.0.0 - 2023-11-01
 
