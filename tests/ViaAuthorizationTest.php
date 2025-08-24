@@ -3,13 +3,7 @@ declare(strict_types = 1);
 
 namespace Tests\Innmind\HttpAuthentication;
 
-use Innmind\HttpAuthentication\{
-    ViaAuthorization,
-    ViaAuthorization\Resolver,
-    ViaAuthorization\NullResolver,
-    Authenticator,
-    Identity,
-};
+use Innmind\HttpAuthentication\ViaAuthorization;
 use Innmind\Http\{
     ServerRequest,
     Method,
@@ -26,22 +20,11 @@ use PHPUnit\Framework\TestCase;
 
 class ViaAuthorizationTest extends TestCase
 {
-    public function testInterface()
-    {
-        $this->assertInstanceOf(
-            Authenticator::class,
-            new ViaAuthorization(new NullResolver),
-        );
-    }
-
     public function testReturnNothingWhenNoAuthorizationHeader()
     {
         $authenticate = new ViaAuthorization(
-            $resolver = $this->createMock(Resolver::class),
+            static fn() => throw new \Exception,
         );
-        $resolver
-            ->expects($this->never())
-            ->method('__invoke');
         $request = ServerRequest::of(
             Url::of('/'),
             Method::get,
@@ -57,11 +40,8 @@ class ViaAuthorizationTest extends TestCase
     public function testReturnNothingWhenAuthorizationHeaderNotParsedCorrectly()
     {
         $authenticate = new ViaAuthorization(
-            $resolver = $this->createMock(Resolver::class),
+            static fn() => throw new \Exception,
         );
-        $resolver
-            ->expects($this->never())
-            ->method('__invoke');
         $request = ServerRequest::of(
             Url::of('/'),
             Method::get,
@@ -80,14 +60,9 @@ class ViaAuthorizationTest extends TestCase
     public function testInvokation()
     {
         $authenticate = new ViaAuthorization(
-            $resolver = $this->createMock(Resolver::class),
+            static fn($value) => Attempt::result($value),
         );
         $expected = new AuthorizationValue('Bearer', 'foo');
-        $resolver
-            ->expects($this->once())
-            ->method('__invoke')
-            ->with($expected)
-            ->willReturn(Attempt::result($identity = $this->createMock(Identity::class)));
         $request = ServerRequest::of(
             Url::of('/'),
             Method::get,
@@ -97,7 +72,7 @@ class ViaAuthorizationTest extends TestCase
             ),
         );
 
-        $this->assertSame($identity, $authenticate($request)->match(
+        $this->assertSame($expected, $authenticate($request)->match(
             static fn($identity) => $identity,
             static fn() => null,
         ));

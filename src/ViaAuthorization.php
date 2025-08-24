@@ -3,7 +3,6 @@ declare(strict_types = 1);
 
 namespace Innmind\HttpAuthentication;
 
-use Innmind\HttpAuthentication\ViaAuthorization\Resolver;
 use Innmind\Http\{
     ServerRequest,
     Header\Authorization,
@@ -14,15 +13,25 @@ use Innmind\Immutable\{
     Predicate\Instance,
 };
 
-final class ViaAuthorization implements Authenticator
+/**
+ * @template T
+ */
+final class ViaAuthorization
 {
-    private Resolver $resolve;
+    /** @var callable(AuthorizationValue): Attempt<T> */
+    private $resolve;
 
-    public function __construct(Resolver $resolve)
+    /**
+     * @param callable(AuthorizationValue): Attempt<T> $resolve
+     */
+    public function __construct(callable $resolve)
     {
         $this->resolve = $resolve;
     }
 
+    /**
+     * @return Attempt<T>
+     */
     public function __invoke(ServerRequest $request): Attempt
     {
         return $request

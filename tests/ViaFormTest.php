@@ -3,13 +3,7 @@ declare(strict_types = 1);
 
 namespace Tests\Innmind\HttpAuthentication;
 
-use Innmind\HttpAuthentication\{
-    ViaForm,
-    Authenticator,
-    ViaForm\Resolver,
-    ViaForm\NullResolver,
-    Identity,
-};
+use Innmind\HttpAuthentication\ViaForm;
 use Innmind\Http\{
     ServerRequest,
     Method,
@@ -21,22 +15,11 @@ use PHPUnit\Framework\TestCase;
 
 class ViaFormTest extends TestCase
 {
-    public function testInterface()
-    {
-        $this->assertInstanceOf(
-            Authenticator::class,
-            new ViaForm(new NullResolver),
-        );
-    }
-
     public function testReturnNothingWhenNotPostRequest()
     {
         $authenticate = new ViaForm(
-            $resolver = $this->createMock(Resolver::class),
+            static fn() => throw new \Exception,
         );
-        $resolver
-            ->expects($this->never())
-            ->method('__invoke');
         $request = ServerRequest::of(
             Url::of('/'),
             Method::get,
@@ -52,20 +35,15 @@ class ViaFormTest extends TestCase
     public function testInvokation()
     {
         $authenticate = new ViaForm(
-            $resolver = $this->createMock(Resolver::class),
+            static fn($value) => Attempt::result($value),
         );
         $request = ServerRequest::of(
             Url::of('/'),
             Method::post,
             ProtocolVersion::v11,
         );
-        $resolver
-            ->expects($this->once())
-            ->method('__invoke')
-            ->with($request->form())
-            ->willReturn(Attempt::result($identity = $this->createMock(Identity::class)));
 
-        $this->assertSame($identity, $authenticate($request)->match(
+        $this->assertSame($request->form(), $authenticate($request)->match(
             static fn($identity) => $identity,
             static fn() => null,
         ));

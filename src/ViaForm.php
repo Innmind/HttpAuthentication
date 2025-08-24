@@ -3,9 +3,9 @@ declare(strict_types = 1);
 
 namespace Innmind\HttpAuthentication;
 
-use Innmind\HttpAuthentication\ViaForm\Resolver;
 use Innmind\Http\{
     ServerRequest,
+    ServerRequest\Form,
     Method,
 };
 use Innmind\Immutable\{
@@ -13,15 +13,25 @@ use Innmind\Immutable\{
     Attempt,
 };
 
-final class ViaForm implements Authenticator
+/**
+ * @template T
+ */
+final class ViaForm
 {
-    private Resolver $resolve;
+    /** @var callable(Form): Attempt<T> */
+    private $resolve;
 
-    public function __construct(Resolver $resolve)
+    /**
+     * @param callable(Form): Attempt<T> $resolve
+     */
+    public function __construct(callable $resolve)
     {
         $this->resolve = $resolve;
     }
 
+    /**
+     * @return Attempt<T>
+     */
     public function __invoke(ServerRequest $request): Attempt
     {
         return Maybe::just($request)

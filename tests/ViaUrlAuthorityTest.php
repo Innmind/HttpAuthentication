@@ -3,13 +3,7 @@ declare(strict_types = 1);
 
 namespace Tests\Innmind\HttpAuthentication;
 
-use Innmind\HttpAuthentication\{
-    ViaUrlAuthority,
-    Authenticator,
-    ViaUrlAuthority\Resolver,
-    ViaUrlAuthority\NullResolver,
-    Identity,
-};
+use Innmind\HttpAuthentication\ViaUrlAuthority;
 use Innmind\Url\Url;
 use Innmind\Http\{
     ServerRequest,
@@ -21,23 +15,12 @@ use PHPUnit\Framework\TestCase;
 
 class ViaUrlAuthorityTest extends TestCase
 {
-    public function testInterface()
-    {
-        $this->assertInstanceOf(
-            Authenticator::class,
-            new ViaUrlAuthority(new NullResolver),
-        );
-    }
-
     public function testReturnNothingWhenNoUserProvidedInTheUrl()
     {
         $authenticate = new ViaUrlAuthority(
-            $resolver = $this->createMock(Resolver::class),
+            static fn() => throw new \Exception,
         );
         $url = Url::of('https://localhost/');
-        $resolver
-            ->expects($this->never())
-            ->method('__invoke');
         $request = ServerRequest::of(
             $url,
             Method::get,
@@ -53,23 +36,18 @@ class ViaUrlAuthorityTest extends TestCase
     public function testInvokation()
     {
         $authenticate = new ViaUrlAuthority(
-            $resolver = $this->createMock(Resolver::class),
+            static fn($user, $password) => Attempt::result([$user, $password]),
         );
         $url = Url::of('https://user:password@localhost/');
         $user = $url->authority()->userInformation()->user();
         $password = $url->authority()->userInformation()->password();
-        $resolver
-            ->expects($this->once())
-            ->method('__invoke')
-            ->with($user, $password)
-            ->willReturn(Attempt::result($identity = $this->createMock(Identity::class)));
         $request = ServerRequest::of(
             $url,
             Method::get,
             ProtocolVersion::v11,
         );
 
-        $this->assertSame($identity, $authenticate($request)->match(
+        $this->assertSame([$user, $password], $authenticate($request)->match(
             static fn($identity) => $identity,
             static fn() => null,
         ));
