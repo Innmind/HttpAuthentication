@@ -11,7 +11,7 @@ use Innmind\Http\{
     ProtocolVersion,
 };
 use Innmind\Immutable\Attempt;
-use PHPUnit\Framework\TestCase;
+use Innmind\BlackBox\PHPUnit\Framework\TestCase;
 
 class ViaUrlAuthorityTest extends TestCase
 {
