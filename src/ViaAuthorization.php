@@ -14,15 +14,11 @@ use Innmind\Immutable\Attempt;
  */
 final class ViaAuthorization
 {
-    /** @var callable(Authorization): Attempt<T> */
-    private $resolve;
-
     /**
-     * @param callable(Authorization): Attempt<T> $resolve
+     * @param \Closure(Authorization): Attempt<T> $resolve
      */
-    public function __construct(callable $resolve)
+    private function __construct(private \Closure $resolve)
     {
-        $this->resolve = $resolve;
     }
 
     /**
@@ -35,5 +31,17 @@ final class ViaAuthorization
             ->find(Authorization::class)
             ->attempt(static fn() => new \RuntimeException('Failed to resolve identity'))
             ->flatMap(fn($value) => ($this->resolve)($value));
+    }
+
+    /**
+     * @template A
+     *
+     * @param callable(Authorization): Attempt<A> $resolve
+     *
+     * @return self<A>
+     */
+    public static function of(callable $resolve): self
+    {
+        return new self(\Closure::fromCallable($resolve));
     }
 }

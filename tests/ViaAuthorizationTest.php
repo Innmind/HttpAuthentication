@@ -21,7 +21,7 @@ class ViaAuthorizationTest extends TestCase
 {
     public function testReturnNothingWhenNoAuthorizationHeader()
     {
-        $authenticate = new ViaAuthorization(
+        $authenticate = ViaAuthorization::of(
             static fn() => throw new \Exception,
         );
         $request = ServerRequest::of(
@@ -38,7 +38,7 @@ class ViaAuthorizationTest extends TestCase
 
     public function testReturnNothingWhenAuthorizationHeaderNotParsedCorrectly()
     {
-        $authenticate = new ViaAuthorization(
+        $authenticate = ViaAuthorization::of(
             static fn() => throw new \Exception,
         );
         $request = ServerRequest::of(
@@ -58,7 +58,7 @@ class ViaAuthorizationTest extends TestCase
 
     public function testInvokation()
     {
-        $authenticate = new ViaAuthorization(
+        $authenticate = ViaAuthorization::of(
             static fn($value) => Attempt::result($value),
         );
         $expected = Authorization::of('Bearer', 'foo');

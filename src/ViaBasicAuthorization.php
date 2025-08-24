@@ -14,15 +14,11 @@ use Innmind\Immutable\Attempt;
  */
 final class ViaBasicAuthorization
 {
-    /** @var callable(string, string): Attempt<T> */
-    private $resolve;
-
     /**
-     * @param callable(string, string): Attempt<T> $resolve
+     * @param \Closure(string, string): Attempt<T> $resolve
      */
-    public function __construct(callable $resolve)
+    private function __construct(private \Closure $resolve)
     {
-        $this->resolve = $resolve;
     }
 
     /**
@@ -46,5 +42,17 @@ final class ViaBasicAuthorization
 
                 return ($this->resolve)($user, $password);
             });
+    }
+
+    /**
+     * @template A
+     *
+     * @param callable(string, string): Attempt<A> $resolve
+     *
+     * @return self<A>
+     */
+    public static function of(callable $resolve): self
+    {
+        return new self(\Closure::fromCallable($resolve));
     }
 }

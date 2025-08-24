@@ -18,15 +18,11 @@ use Innmind\Immutable\{
  */
 final class ViaForm
 {
-    /** @var callable(Form): Attempt<T> */
-    private $resolve;
-
     /**
-     * @param callable(Form): Attempt<T> $resolve
+     * @param \Closure(Form): Attempt<T> $resolve
      */
-    public function __construct(callable $resolve)
+    private function __construct(private \Closure $resolve)
     {
-        $this->resolve = $resolve;
     }
 
     /**
@@ -38,5 +34,17 @@ final class ViaForm
             ->filter(static fn($request) => $request->method() === Method::post)
             ->attempt(static fn() => new \RuntimeException('Failed to resolve identity'))
             ->flatMap(fn($request) => ($this->resolve)($request->form()));
+    }
+
+    /**
+     * @template A
+     *
+     * @param callable(Form): Attempt<A> $resolve
+     *
+     * @return self<A>
+     */
+    public static function of(callable $resolve): self
+    {
+        return new self(\Closure::fromCallable($resolve));
     }
 }

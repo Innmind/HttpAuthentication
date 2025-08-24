@@ -7,6 +7,10 @@
 - All authenticators now return an `Innmind\Immutable\Attempt`
 - All authenticators can return any type inside the `Attempt`
 - Requires `innmind/foundation:~1.9`
+- `Innmind\HttpAuthentication\ViaAuthorization` constructor is private, use `::of()` instead
+- `Innmind\HttpAuthentication\ViaBasicAuthorization` constructor is private, use `::of()` instead
+- `Innmind\HttpAuthentication\ViaForm` constructor is private, use `::of()` instead
+- `Innmind\HttpAuthentication\ViaUrlAuthority` constructor is private, use `::of()` instead
 
 ### Removed
 
