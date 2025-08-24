@@ -10,7 +10,7 @@ use Innmind\Http\{
     Header\AuthorizationValue,
 };
 use Innmind\Immutable\{
-    Maybe,
+    Attempt,
     Predicate\Instance,
 };
 
@@ -23,13 +23,14 @@ final class ViaAuthorization implements Authenticator
         $this->resolve = $resolve;
     }
 
-    public function __invoke(ServerRequest $request): Maybe
+    public function __invoke(ServerRequest $request): Attempt
     {
         return $request
             ->headers()
             ->find(Authorization::class)
             ->flatMap(static fn($header) => $header->values()->find(static fn() => true))
             ->keep(Instance::of(AuthorizationValue::class))
-            ->flatMap(fn($value) => ($this->resolve)($value));
+            ->flatMap(fn($value) => ($this->resolve)($value))
+            ->attempt(static fn() => new \RuntimeException('Failed to resolve identity'));
     }
 }

@@ -8,7 +8,7 @@ use Innmind\Http\{
     ServerRequest,
     Header\Authorization,
 };
-use Innmind\Immutable\Maybe;
+use Innmind\Immutable\Attempt;
 
 final class ViaBasicAuthorization implements Authenticator
 {
@@ -19,7 +19,7 @@ final class ViaBasicAuthorization implements Authenticator
         $this->resolve = $resolve;
     }
 
-    public function __invoke(ServerRequest $request): Maybe
+    public function __invoke(ServerRequest $request): Attempt
     {
         return $request
             ->headers()
@@ -29,6 +29,7 @@ final class ViaBasicAuthorization implements Authenticator
                 [$user, $password] = \explode(':', \base64_decode($header->parameter(), true));
 
                 return ($this->resolve)($user, $password);
-            });
+            })
+            ->attempt(static fn() => new \RuntimeException('Failed to resolve identity'));
     }
 }

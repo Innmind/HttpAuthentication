@@ -19,7 +19,7 @@ use Innmind\Http\{
     Header\Value\Value,
 };
 use Innmind\Url\Url;
-use Innmind\Immutable\Maybe;
+use Innmind\Immutable\Attempt;
 use PHPUnit\Framework\TestCase;
 
 class ValidateAuthorizationHeaderTest extends TestCase
@@ -48,7 +48,7 @@ class ValidateAuthorizationHeaderTest extends TestCase
             ->expects($this->once())
             ->method('__invoke')
             ->with($request)
-            ->willReturn(Maybe::just($expected = $this->createMock(Identity::class)));
+            ->willReturn(Attempt::result($expected = $this->createMock(Identity::class)));
 
         $this->assertSame($expected, $validate($request)->match(
             static fn($identity) => $identity,
@@ -101,7 +101,7 @@ class ValidateAuthorizationHeaderTest extends TestCase
             ->expects($this->once())
             ->method('__invoke')
             ->with($request)
-            ->willReturn(Maybe::just($expected = $this->createMock(Identity::class)));
+            ->willReturn(Attempt::result($expected = $this->createMock(Identity::class)));
 
         $this->assertSame($expected, $validate($request)->match(
             static fn($identity) => $identity,

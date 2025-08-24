@@ -14,7 +14,7 @@ use Innmind\Http\{
     ProtocolVersion,
 };
 use Innmind\Url\Url;
-use Innmind\Immutable\Maybe;
+use Innmind\Immutable\Attempt;
 use PHPUnit\Framework\TestCase;
 
 class AnyTest extends TestCase
@@ -55,17 +55,17 @@ class AnyTest extends TestCase
             ->expects($this->once())
             ->method('__invoke')
             ->with($request)
-            ->willReturn(Maybe::nothing());
+            ->willReturn(Attempt::error(new \Exception));
         $notImplemented
             ->expects($this->once())
             ->method('__invoke')
             ->with($request)
-            ->willReturn(Maybe::nothing());
+            ->willReturn(Attempt::error(new \Exception));
         $expected
             ->expects($this->once())
             ->method('__invoke')
             ->with($request)
-            ->willReturn(Maybe::just($identity = $this->createMock(Identity::class)));
+            ->willReturn(Attempt::result($identity = $this->createMock(Identity::class)));
         $notCalled
             ->expects($this->never())
             ->method('__invoke');
