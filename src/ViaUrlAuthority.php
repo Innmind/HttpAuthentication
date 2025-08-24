@@ -3,7 +3,6 @@ declare(strict_types = 1);
 
 namespace Innmind\HttpAuthentication;
 
-use Innmind\HttpAuthentication\ViaUrlAuthority\Resolver;
 use Innmind\Http\ServerRequest;
 use Innmind\Url\Authority\UserInformation\{
     User,
@@ -13,9 +12,13 @@ use Innmind\Immutable\Attempt;
 
 final class ViaUrlAuthority implements Authenticator
 {
-    private Resolver $resolve;
+    /** @var callable(User, Password): Attempt<Identity> */
+    private $resolve;
 
-    public function __construct(Resolver $resolve)
+    /**
+     * @param callable(User, Password): Attempt<Identity> $resolve
+     */
+    public function __construct(callable $resolve)
     {
         $this->resolve = $resolve;
     }

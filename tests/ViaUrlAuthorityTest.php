@@ -6,8 +6,6 @@ namespace Tests\Innmind\HttpAuthentication;
 use Innmind\HttpAuthentication\{
     ViaUrlAuthority,
     Authenticator,
-    ViaUrlAuthority\Resolver,
-    ViaUrlAuthority\NullResolver,
     Identity,
 };
 use Innmind\Url\Url;
@@ -25,19 +23,16 @@ class ViaUrlAuthorityTest extends TestCase
     {
         $this->assertInstanceOf(
             Authenticator::class,
-            new ViaUrlAuthority(new NullResolver),
+            new ViaUrlAuthority(static fn() => null),
         );
     }
 
     public function testReturnNothingWhenNoUserProvidedInTheUrl()
     {
         $authenticate = new ViaUrlAuthority(
-            $resolver = $this->createMock(Resolver::class),
+            static fn() => throw new \Exception,
         );
         $url = Url::of('https://localhost/');
-        $resolver
-            ->expects($this->never())
-            ->method('__invoke');
         $request = ServerRequest::of(
             $url,
             Method::get,
@@ -52,17 +47,13 @@ class ViaUrlAuthorityTest extends TestCase
 
     public function testInvokation()
     {
+        $identity = $this->createMock(Identity::class);
         $authenticate = new ViaUrlAuthority(
-            $resolver = $this->createMock(Resolver::class),
+            static fn() => Attempt::result($identity),
         );
         $url = Url::of('https://user:password@localhost/');
         $user = $url->authority()->userInformation()->user();
         $password = $url->authority()->userInformation()->password();
-        $resolver
-            ->expects($this->once())
-            ->method('__invoke')
-            ->with($user, $password)
-            ->willReturn(Attempt::result($identity = $this->createMock(Identity::class)));
         $request = ServerRequest::of(
             $url,
             Method::get,

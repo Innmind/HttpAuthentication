@@ -6,8 +6,6 @@ namespace Tests\Innmind\HttpAuthentication;
 use Innmind\HttpAuthentication\{
     ViaForm,
     Authenticator,
-    ViaForm\Resolver,
-    ViaForm\NullResolver,
     Identity,
 };
 use Innmind\Http\{
@@ -25,18 +23,15 @@ class ViaFormTest extends TestCase
     {
         $this->assertInstanceOf(
             Authenticator::class,
-            new ViaForm(new NullResolver),
+            new ViaForm(static fn() => null),
         );
     }
 
     public function testReturnNothingWhenNotPostRequest()
     {
         $authenticate = new ViaForm(
-            $resolver = $this->createMock(Resolver::class),
+            static fn() => throw new \Exception,
         );
-        $resolver
-            ->expects($this->never())
-            ->method('__invoke');
         $request = ServerRequest::of(
             Url::of('/'),
             Method::get,
@@ -51,19 +46,15 @@ class ViaFormTest extends TestCase
 
     public function testInvokation()
     {
+        $identity = $this->createMock(Identity::class);
         $authenticate = new ViaForm(
-            $resolver = $this->createMock(Resolver::class),
+            static fn() => Attempt::result($identity),
         );
         $request = ServerRequest::of(
             Url::of('/'),
             Method::post,
             ProtocolVersion::v11,
         );
-        $resolver
-            ->expects($this->once())
-            ->method('__invoke')
-            ->with($request->form())
-            ->willReturn(Attempt::result($identity = $this->createMock(Identity::class)));
 
         $this->assertSame($identity, $authenticate($request)->match(
             static fn($identity) => $identity,

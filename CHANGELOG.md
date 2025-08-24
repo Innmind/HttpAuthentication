@@ -5,7 +5,10 @@
 ### Changed
 
 - `Innmind\HttpAuthentication\Authenticator::__invoke()` now returns an `Innmind\Immutable\Attempt`
-- All resolvers now return an `Innmind\Immutable\Attempt`
+
+### Removed
+
+- All resolvers have been replaced by `callable`s
 
 ## 4.0.0 - 2023-11-01
 
