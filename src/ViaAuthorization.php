@@ -3,33 +3,45 @@ declare(strict_types = 1);
 
 namespace Innmind\HttpAuthentication;
 
-use Innmind\HttpAuthentication\ViaAuthorization\Resolver;
 use Innmind\Http\{
     ServerRequest,
     Header\Authorization,
-    Header\AuthorizationValue,
 };
-use Innmind\Immutable\{
-    Maybe,
-    Predicate\Instance,
-};
+use Innmind\Immutable\Attempt;
 
-final class ViaAuthorization implements Authenticator
+/**
+ * @template T
+ */
+final class ViaAuthorization
 {
-    private Resolver $resolve;
-
-    public function __construct(Resolver $resolve)
+    /**
+     * @param \Closure(Authorization): Attempt<T> $resolve
+     */
+    private function __construct(private \Closure $resolve)
     {
-        $this->resolve = $resolve;
     }
 
-    public function __invoke(ServerRequest $request): Maybe
+    /**
+     * @return Attempt<T>
+     */
+    public function __invoke(ServerRequest $request): Attempt
     {
         return $request
             ->headers()
             ->find(Authorization::class)
-            ->flatMap(static fn($header) => $header->values()->find(static fn() => true))
-            ->keep(Instance::of(AuthorizationValue::class))
+            ->attempt(static fn() => new \RuntimeException('Failed to resolve identity'))
             ->flatMap(fn($value) => ($this->resolve)($value));
+    }
+
+    /**
+     * @template A
+     *
+     * @param callable(Authorization): Attempt<A> $resolve
+     *
+     * @return self<A>
+     */
+    public static function of(callable $resolve): self
+    {
+        return new self(\Closure::fromCallable($resolve));
     }
 }

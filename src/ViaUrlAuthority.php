@@ -3,33 +3,50 @@ declare(strict_types = 1);
 
 namespace Innmind\HttpAuthentication;
 
-use Innmind\HttpAuthentication\ViaUrlAuthority\Resolver;
 use Innmind\Http\ServerRequest;
 use Innmind\Url\Authority\UserInformation\{
     User,
     Password,
 };
-use Innmind\Immutable\Maybe;
+use Innmind\Immutable\Attempt;
 
-final class ViaUrlAuthority implements Authenticator
+/**
+ * @template T
+ */
+final class ViaUrlAuthority
 {
-    private Resolver $resolve;
-
-    public function __construct(Resolver $resolve)
+    /**
+     * @param \Closure(User, Password): Attempt<T> $resolve
+     */
+    private function __construct(private \Closure $resolve)
     {
-        $this->resolve = $resolve;
     }
 
-    public function __invoke(ServerRequest $request): Maybe
+    /**
+     * @return Attempt<T>
+     */
+    public function __invoke(ServerRequest $request): Attempt
     {
         $user = $request->url()->authority()->userInformation()->user();
         $password = $request->url()->authority()->userInformation()->password();
 
         if ($user->equals(User::none()) && $password->equals(Password::none())) {
-            /** @var Maybe<Identity> */
-            return Maybe::nothing();
+            /** @var Attempt<T> */
+            return Attempt::error(new \RuntimeException('No authentication provided'));
         }
 
         return ($this->resolve)($user, $password);
+    }
+
+    /**
+     * @template A
+     *
+     * @param callable(User, Password): Attempt<A> $resolve
+     *
+     * @return self<A>
+     */
+    public static function of(callable $resolve): self
+    {
+        return new self(\Closure::fromCallable($resolve));
     }
 }

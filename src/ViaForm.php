@@ -3,26 +3,48 @@ declare(strict_types = 1);
 
 namespace Innmind\HttpAuthentication;
 
-use Innmind\HttpAuthentication\ViaForm\Resolver;
 use Innmind\Http\{
     ServerRequest,
+    ServerRequest\Form,
     Method,
 };
-use Innmind\Immutable\Maybe;
+use Innmind\Immutable\{
+    Maybe,
+    Attempt,
+};
 
-final class ViaForm implements Authenticator
+/**
+ * @template T
+ */
+final class ViaForm
 {
-    private Resolver $resolve;
-
-    public function __construct(Resolver $resolve)
+    /**
+     * @param \Closure(Form): Attempt<T> $resolve
+     */
+    private function __construct(private \Closure $resolve)
     {
-        $this->resolve = $resolve;
     }
 
-    public function __invoke(ServerRequest $request): Maybe
+    /**
+     * @return Attempt<T>
+     */
+    public function __invoke(ServerRequest $request): Attempt
     {
         return Maybe::just($request)
             ->filter(static fn($request) => $request->method() === Method::post)
+            ->attempt(static fn() => new \RuntimeException('Failed to resolve identity'))
             ->flatMap(fn($request) => ($this->resolve)($request->form()));
+    }
+
+    /**
+     * @template A
+     *
+     * @param callable(Form): Attempt<A> $resolve
+     *
+     * @return self<A>
+     */
+    public static function of(callable $resolve): self
+    {
+        return new self(\Closure::fromCallable($resolve));
     }
 }

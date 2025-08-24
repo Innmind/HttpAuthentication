@@ -3,45 +3,27 @@ declare(strict_types = 1);
 
 namespace Tests\Innmind\HttpAuthentication;
 
-use Innmind\HttpAuthentication\{
-    ViaAuthorization,
-    ViaAuthorization\Resolver,
-    ViaAuthorization\NullResolver,
-    Authenticator,
-    Identity,
-};
+use Innmind\HttpAuthentication\ViaAuthorization;
 use Innmind\Http\{
     ServerRequest,
     Method,
     ProtocolVersion,
     Headers,
-    Header\Header,
-    Header\Value\Value,
+    Header,
+    Header\Value,
     Header\Authorization,
-    Header\AuthorizationValue,
 };
 use Innmind\Url\Url;
-use Innmind\Immutable\Maybe;
-use PHPUnit\Framework\TestCase;
+use Innmind\Immutable\Attempt;
+use Innmind\BlackBox\PHPUnit\Framework\TestCase;
 
 class ViaAuthorizationTest extends TestCase
 {
-    public function testInterface()
-    {
-        $this->assertInstanceOf(
-            Authenticator::class,
-            new ViaAuthorization(new NullResolver),
-        );
-    }
-
     public function testReturnNothingWhenNoAuthorizationHeader()
     {
-        $authenticate = new ViaAuthorization(
-            $resolver = $this->createMock(Resolver::class),
+        $authenticate = ViaAuthorization::of(
+            static fn() => throw new \Exception,
         );
-        $resolver
-            ->expects($this->never())
-            ->method('__invoke');
         $request = ServerRequest::of(
             Url::of('/'),
             Method::get,
@@ -56,18 +38,15 @@ class ViaAuthorizationTest extends TestCase
 
     public function testReturnNothingWhenAuthorizationHeaderNotParsedCorrectly()
     {
-        $authenticate = new ViaAuthorization(
-            $resolver = $this->createMock(Resolver::class),
+        $authenticate = ViaAuthorization::of(
+            static fn() => throw new \Exception,
         );
-        $resolver
-            ->expects($this->never())
-            ->method('__invoke');
         $request = ServerRequest::of(
             Url::of('/'),
             Method::get,
             ProtocolVersion::v11,
             Headers::of(
-                new Header('Authorization', new Value('Basic foo')),
+                Header::of('Authorization', Value::of('Basic foo')),
             ),
         );
 
@@ -79,25 +58,20 @@ class ViaAuthorizationTest extends TestCase
 
     public function testInvokation()
     {
-        $authenticate = new ViaAuthorization(
-            $resolver = $this->createMock(Resolver::class),
+        $authenticate = ViaAuthorization::of(
+            static fn($value) => Attempt::result($value),
         );
-        $expected = new AuthorizationValue('Bearer', 'foo');
-        $resolver
-            ->expects($this->once())
-            ->method('__invoke')
-            ->with($expected)
-            ->willReturn(Maybe::just($identity = $this->createMock(Identity::class)));
+        $expected = Authorization::of('Bearer', 'foo');
         $request = ServerRequest::of(
             Url::of('/'),
             Method::get,
             ProtocolVersion::v11,
             Headers::of(
-                new Authorization($expected),
+                $expected,
             ),
         );
 
-        $this->assertSame($identity, $authenticate($request)->match(
+        $this->assertSame($expected, $authenticate($request)->match(
             static fn($identity) => $identity,
             static fn() => null,
         ));

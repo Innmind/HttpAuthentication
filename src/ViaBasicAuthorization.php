@@ -3,32 +3,56 @@ declare(strict_types = 1);
 
 namespace Innmind\HttpAuthentication;
 
-use Innmind\HttpAuthentication\ViaBasicAuthorization\Resolver;
 use Innmind\Http\{
     ServerRequest,
     Header\Authorization,
 };
-use Innmind\Immutable\Maybe;
+use Innmind\Immutable\Attempt;
 
-final class ViaBasicAuthorization implements Authenticator
+/**
+ * @template T
+ */
+final class ViaBasicAuthorization
 {
-    private Resolver $resolve;
-
-    public function __construct(Resolver $resolve)
+    /**
+     * @param \Closure(string, string): Attempt<T> $resolve
+     */
+    private function __construct(private \Closure $resolve)
     {
-        $this->resolve = $resolve;
     }
 
-    public function __invoke(ServerRequest $request): Maybe
+    /**
+     * @return Attempt<T>
+     */
+    public function __invoke(ServerRequest $request): Attempt
     {
         return $request
             ->headers()
             ->find(Authorization::class)
             ->filter(static fn($header) => $header->scheme() === 'Basic')
+            ->attempt(static fn() => new \RuntimeException('Failed to resolve identity'))
             ->flatMap(function($header) {
-                [$user, $password] = \explode(':', \base64_decode($header->parameter(), true));
+                $string = \base64_decode($header->parameter(), true);
+
+                if (!\is_string($string)) {
+                    return Attempt::error(new \RuntimeException('Malformed authorization header parameter'));
+                }
+
+                [$user, $password] = \explode(':', $string);
 
                 return ($this->resolve)($user, $password);
             });
+    }
+
+    /**
+     * @template A
+     *
+     * @param callable(string, string): Attempt<A> $resolve
+     *
+     * @return self<A>
+     */
+    public static function of(callable $resolve): self
+    {
+        return new self(\Closure::fromCallable($resolve));
     }
 }
