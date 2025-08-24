@@ -36,7 +36,13 @@ final class ViaBasicAuthorization
             ->filter(static fn($header) => $header->scheme() === 'Basic')
             ->attempt(static fn() => new \RuntimeException('Failed to resolve identity'))
             ->flatMap(function($header) {
-                [$user, $password] = \explode(':', \base64_decode($header->parameter(), true));
+                $string = \base64_decode($header->parameter(), true);
+
+                if (!\is_string($string)) {
+                    return Attempt::error(new \RuntimeException('Malformed authorization header parameter'));
+                }
+
+                [$user, $password] = \explode(':', $string);
 
                 return ($this->resolve)($user, $password);
             });
