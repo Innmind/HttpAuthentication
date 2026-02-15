@@ -47,5 +47,5 @@ $router = Router::of(
         ));
 );
 
-$response = $router(/* an instance of Innmind\Http\Message\ServerRequest */)->unwrap();
+$response = $router(/* an instance of Innmind\Http\ServerRequest */)->unwrap();
 ```

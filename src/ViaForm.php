@@ -28,6 +28,7 @@ final class ViaForm
     /**
      * @return Attempt<T>
      */
+    #[\NoDiscard]
     public function __invoke(ServerRequest $request): Attempt
     {
         return Maybe::just($request)
@@ -43,6 +44,7 @@ final class ViaForm
      *
      * @return self<A>
      */
+    #[\NoDiscard]
     public static function of(callable $resolve): self
     {
         return new self(\Closure::fromCallable($resolve));
