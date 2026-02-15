@@ -24,6 +24,7 @@ final class ViaBasicAuthorization
     /**
      * @return Attempt<T>
      */
+    #[\NoDiscard]
     public function __invoke(ServerRequest $request): Attempt
     {
         return $request
@@ -51,6 +52,7 @@ final class ViaBasicAuthorization
      *
      * @return self<A>
      */
+    #[\NoDiscard]
     public static function of(callable $resolve): self
     {
         return new self(\Closure::fromCallable($resolve));
