@@ -25,6 +25,7 @@ final class ViaUrlAuthority
     /**
      * @return Attempt<T>
      */
+    #[\NoDiscard]
     public function __invoke(ServerRequest $request): Attempt
     {
         $user = $request->url()->authority()->userInformation()->user();
@@ -45,6 +46,7 @@ final class ViaUrlAuthority
      *
      * @return self<A>
      */
+    #[\NoDiscard]
     public static function of(callable $resolve): self
     {
         return new self(\Closure::fromCallable($resolve));
